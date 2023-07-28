@@ -12,4 +12,7 @@
         <property name="username" value="tobaby"/>
         <property name="password" value="0000"/>
     </bean>
+    <bean id="userService" class="com.example.tobby.user.UserService">
+        <property name="userDao" ref="userDao"/>
+    </bean>
 </beans>
