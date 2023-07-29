@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,7 +49,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void upgradeLevels() {
+    public void upgradeLevels() throws SQLException {
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
         userService.upgradeLevels();
@@ -81,16 +83,20 @@ class UserServiceTest {
         assertThat(userWithoutLevelRead.getLevel()).isEqualTo(Level.BASIC);
     }
 
+    @Autowired
+    DataSource dataSource;
     @Test
     public void upgradeAllorNothing() {
-        TestUserService testUserService = new TestUserService(users.get(3).getId());
+        UserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
+        testUserService.setDataSource(this.dataSource);
+
         userDao.deleteAll();
         for (User user : users) userDao.add(user);
         try {
             testUserService.upgradeLevels();
             fail("err");
-        } catch (TestUserServiceException e) {
+        } catch (TestUserServiceException | SQLException e) {
         }
         checkLevelUpgraded(users.get(1), false);
     }
