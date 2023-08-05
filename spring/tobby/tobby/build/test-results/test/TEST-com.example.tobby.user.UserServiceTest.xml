@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.tobby.user.UserServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-07-28T23:52:55" hostname="DESKTOP-J2EHI2R" time="1.245">
+<testsuite name="com.example.tobby.user.UserServiceTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2023-08-03T15:20:36" hostname="DESKTOP-J2EHI2R" time="1.463">
   <properties/>
-  <testcase name="upgradeAllorNothing()" classname="com.example.tobby.user.UserServiceTest" time="1.245"/>
+  <testcase name="upgradeAllorNothing()" classname="com.example.tobby.user.UserServiceTest" time="1.178"/>
+  <testcase name="add()" classname="com.example.tobby.user.UserServiceTest" time="0.088"/>
+  <testcase name="bean()" classname="com.example.tobby.user.UserServiceTest" time="0.002"/>
+  <testcase name="upgradeLevels()" classname="com.example.tobby.user.UserServiceTest" time="0.19"/>
   <system-out><![CDATA[
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -11,9 +14,9 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.1.1)
 
-2023-07-29T08:52:54.885+09:00  INFO 15352 --- [    Test worker] com.example.tobby.user.UserServiceTest   : Starting UserServiceTest using Java 17.0.2 with PID 15352 (started by 192293 in C:\Users\192293\TIL\spring\tobby\tobby)
-2023-07-29T08:52:54.888+09:00  INFO 15352 --- [    Test worker] com.example.tobby.user.UserServiceTest   : No active profile set, falling back to 1 default profile: "default"
-2023-07-29T08:52:55.145+09:00  INFO 15352 --- [    Test worker] com.example.tobby.user.UserServiceTest   : Started UserServiceTest in 0.49 seconds (process running for 1.484)
+2023-08-04T00:20:36.460+09:00  INFO 5892 --- [    Test worker] com.example.tobby.user.UserServiceTest   : Starting UserServiceTest using Java 17.0.2 with PID 5892 (started by 192293 in C:\Users\192293\TIL\spring\tobby\tobby)
+2023-08-04T00:20:36.463+09:00  INFO 5892 --- [    Test worker] com.example.tobby.user.UserServiceTest   : No active profile set, falling back to 1 default profile: "default"
+2023-08-04T00:20:36.741+09:00  INFO 5892 --- [    Test worker] com.example.tobby.user.UserServiceTest   : Started UserServiceTest in 0.555 seconds (process running for 1.587)
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

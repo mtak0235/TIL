@@ -12,8 +12,18 @@
         <property name="username" value="tobaby"/>
         <property name="password" value="0000"/>
     </bean>
-    <bean id="userService" class="com.example.tobby.user.UserService">
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
-        <property name="userDao" ref="userDao"/>
     </bean>
+<!--    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">-->
+<!--    </bean>-->
+    <bean id="userService" class="com.example.tobby.user.service.UserService">
+        <property name="userDao" ref="userDao"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="mailSender" ref="mailSender"/>
+    </bean>
+    <bean id="mailSender" class="com.example.tobby.user.service.DummyMailSender"/>
+<!--    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">-->
+<!--        <property name="host" value="mail.server.host"/>-->
+<!--    </bean>-->
 </beans>
