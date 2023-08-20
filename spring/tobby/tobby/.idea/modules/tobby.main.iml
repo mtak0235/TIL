@@ -14,6 +14,9 @@
         <fileset id="fileset2" name="Spring 애플리케이션 컨텍스트" removed="false">
           <file>file://$MODULE_DIR$/../../src/main/resources/applicationContext.xml</file>
         </fileset>
+        <fileset id="fileset3" name="FactoryBeanTest Context" removed="false">
+          <file>file://$MODULE_DIR$/../../src/main/resources/FactoryBeanTest-context.xml</file>
+        </fileset>
       </configuration>
     </facet>
   </component>
