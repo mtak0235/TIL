@@ -1,4 +1,4 @@
-package org.example.datastructure.arrayNList;
+package org.example.datastructure;
 
 import java.util.Scanner;
 
