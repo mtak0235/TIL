@@ -53,19 +53,19 @@ public class __12891 {
 
     private static void remove(char c) {
         switch (c) {
-            case 'A' -> {
+            case ('A') :{
                 currentStatusArr[0]--;
                 if (currentStatusArr[0] == checking[0]) satisfiedNum--;
             }
-            case 'C' -> {
+            case ('C') : {
                 currentStatusArr[1]--;
                 if (currentStatusArr[1] == checking[1]) satisfiedNum--;
             }
-            case 'G' -> {
+            case ('G') : {
                 currentStatusArr[2]--;
                 if (currentStatusArr[2] == checking[2]) satisfiedNum--;
             }
-            case 'T' -> {
+            case ('T') : {
                 currentStatusArr[3]--;
                 if (currentStatusArr[3] == checking[3]) satisfiedNum--;
             }
@@ -74,19 +74,19 @@ public class __12891 {
 
     private static void add(char c) {
         switch (c) {
-            case 'A' -> {
+            case ('A') :{
                 currentStatusArr[0]++;
                 if (currentStatusArr[0] == checking[0]) satisfiedNum++;
             }
-            case 'C' -> {
+            case ('C' ) :{
                 currentStatusArr[1]++;
                 if (currentStatusArr[1] == checking[1]) satisfiedNum++;
             }
-            case 'G' -> {
+            case ('G') : {
                 currentStatusArr[2]++;
                 if (currentStatusArr[2] == checking[2]) satisfiedNum++;
             }
-            case 'T' -> {
+            case ('T' ) :{
                 currentStatusArr[3]++;
                 if (currentStatusArr[3] == checking[3]) satisfiedNum++;
             }
