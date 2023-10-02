@@ -41,12 +41,12 @@ class UserDaoTest {
 
     @BeforeEach
     private void setUp() {
-        SingleConnectionDataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost/tobby", "tobaby", "0000", true);
+        DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost/tobby", "tobaby", "0000", true);
 //        dao.setDataSource(dataSource);
 //        dao = context.getBean("userDao", UserDao.class);
-        user1 = new User("a", "탁예지", "0000", Level.SILVER, 55, 10);
-        user2 = new User("b", "탁도윤", "000", Level.GOLD, 100, 40);
-        user3 = new User("c", "탁민경", "0000", Level.BASIC, 1, 0);
+        user1 = new User("a", "탁예지", "0000", "a@gmail.com", Level.SILVER, 55, 10);
+        user2 = new User("b", "탁도윤", "000","b@gmail.com", Level.GOLD, 100, 40);
+        user3 = new User("c", "탁민경", "0000","c@gmail.com", Level.BASIC, 1, 0);
 
     }
 

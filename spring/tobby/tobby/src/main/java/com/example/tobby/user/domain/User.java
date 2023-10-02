@@ -8,18 +8,28 @@ public class User {
     int login;
     int recommend;
     String password;
+    String email;
 
     public User() {
     }
 
-    public User(String id, String name, String password, Level level,
+    public User(String id, String name, String password, String email, Level level,
                 int login, int recommend) {
         this.id = id;
         this.name = name;
         this.password = password;
+        this.email = email;
         this.level = level;
         this.login = login;
         this.recommend = recommend;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public Level getLevel() {
