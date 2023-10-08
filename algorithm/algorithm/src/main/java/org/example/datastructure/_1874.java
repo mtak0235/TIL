@@ -38,7 +38,8 @@ public class _1874 {
         }
         if (flag) {
             System.out.println(stringBuffer.toString());
-
+            System.out.println(stringBuffer.toString());
+    
         }
     }
 }
