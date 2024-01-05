@@ -1,0 +1,15 @@
+package scanner;
+
+import java.util.Scanner;
+
+public class Scanner2 {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("첫 숫자를 입력하세요");
+        int num1 = scanner.nextInt();
+        System.out.println("두번쨰 숫자를 입력하세요");
+        int num2 = scanner.nextInt();
+        System.out.println("두 숫자의 합 : " + (num1 + num2));
+
+    }
+}
