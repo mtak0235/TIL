@@ -18,35 +18,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration
 public class JUnitTest {
 
-    @Autowired
-    ApplicationContext context;
-    static ApplicationContext contextObject = null;
-    static Set<JUnitTest> tests = new HashSet<>();
+  @Autowired
+  ApplicationContext context;
+  static ApplicationContext contextObject = null;
+  static Set<JUnitTest> tests = new HashSet<>();
 
-    @Test
-    public void test1() {
-        assertThat(tests).doesNotContain(this);
-        tests.add(this);
-        assertThat(contextObject).satisfiesAnyOf(real-> assertThat(real).isEqualTo(null),
-                real->assertThat(real).isEqualTo(this.context));
-        contextObject = this.context;
-    }
+  @Test
+  public void test1() {
+    assertThat(tests).doesNotContain(this);
+    tests.add(this);
+    assertThat(contextObject).satisfiesAnyOf(real -> assertThat(real).isEqualTo(null),
+        real -> assertThat(real).isEqualTo(this.context));
+    contextObject = this.context;
+  }
 
-    @Test
-    public void test2() {
-        assertThat(tests).doesNotContain(this);
-        tests.add(this);
-        assertThat(contextObject).satisfiesAnyOf(real-> assertThat(real).isEqualTo(null),
-                real->assertThat(real).isEqualTo(this.context));
-        contextObject = this.context;
-    }
+  @Test
+  public void test2() {
+    assertThat(tests).doesNotContain(this);
+    tests.add(this);
+    assertThat(contextObject).satisfiesAnyOf(real -> assertThat(real).isEqualTo(null),
+        real -> assertThat(real).isEqualTo(this.context));
+    contextObject = this.context;
+  }
 
-    @Test
-    public void test3() {
-        assertThat(tests).doesNotContain(this);
-        tests.add(this);
-        assertThat(contextObject).satisfiesAnyOf(real-> assertThat(real).isEqualTo(null),
-                real->assertThat(real).isEqualTo(this.context));
-        contextObject = this.context;
-    }
+  @Test
+  public void test3() {
+    assertThat(tests).doesNotContain(this);
+    tests.add(this);
+    assertThat(contextObject).satisfiesAnyOf(real -> assertThat(real).isEqualTo(null),
+        real -> assertThat(real).isEqualTo(this.context));
+    contextObject = this.context;
+  }
 }

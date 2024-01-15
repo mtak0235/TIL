@@ -34,85 +34,86 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 //@DirtiesContext
 class UserDaoTest {
 
-    @Autowired
-    private ApplicationContext context;
-    @Autowired
-    UserDao dao;
+  @Autowired
+  private ApplicationContext context;
+  @Autowired
+  UserDao dao;
 
-    @BeforeEach
-    private void setUp() {
-        DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost/tobby", "tobaby", "0000", true);
+  @BeforeEach
+  private void setUp() {
+    DataSource dataSource = new SingleConnectionDataSource("jdbc:mysql://localhost/tobby", "tobaby",
+        "0000", true);
 //        dao.setDataSource(dataSource);
 //        dao = context.getBean("userDao", UserDao.class);
-        user1 = new User("a", "탁예지", "0000", "a@gmail.com", Level.SILVER, 55, 10);
-        user2 = new User("b", "탁도윤", "000","b@gmail.com", Level.GOLD, 100, 40);
-        user3 = new User("c", "탁민경", "0000","c@gmail.com", Level.BASIC, 1, 0);
+    user1 = new User("a", "탁예지", "0000", "a@gmail.com", Level.SILVER, 55, 10);
+    user2 = new User("b", "탁도윤", "000", "b@gmail.com", Level.GOLD, 100, 40);
+    user3 = new User("c", "탁민경", "0000", "c@gmail.com", Level.BASIC, 1, 0);
 
-    }
+  }
 
-    @BeforeEach
-    private void initExecuted() {
-        System.out.println("context = " + context);
-        System.out.println("this = " + this);
-    }
+  @BeforeEach
+  private void initExecuted() {
+    System.out.println("context = " + context);
+    System.out.println("this = " + this);
+  }
 
-    @AfterEach
-    private void cleanup() throws SQLException {
+  @AfterEach
+  private void cleanup() throws SQLException {
 
-        dao.deleteAll();
-    }
+    dao.deleteAll();
+  }
 
-    User user3;
-    User user1;
-    User user2;
+  User user3;
+  User user1;
+  User user2;
 
-    @Test
-    void add_get() throws SQLException, ClassNotFoundException {
+  @Test
+  void add_get() throws SQLException, ClassNotFoundException {
 //        UserDao dao = new UserDao(new DConnectionMaker());
-        dao.add(user3);
-        System.out.println("succeed " + user3.getId());
+    dao.add(user3);
+    System.out.println("succeed " + user3.getId());
 
-        User user1 = dao.get(user3.getId());
-        System.out.println(user1.getId());
-        System.out.println(user1.getName());
-        System.out.println(user1.getPassword());
-        System.out.println("succeed" + user1.getId());
-    }
+    User user1 = dao.get(user3.getId());
+    System.out.println(user1.getId());
+    System.out.println(user1.getName());
+    System.out.println(user1.getPassword());
+    System.out.println("succeed" + user1.getId());
+  }
 
-    @Test
-    void addAndGet() throws SQLException, ClassNotFoundException {
+  @Test
+  void addAndGet() throws SQLException, ClassNotFoundException {
 //        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(DaoFactory.class);
 //        UserDao dao = applicationContext.getBean("userDao", UserDao.class);
-        dao.deleteAll();
-        assertThat(dao.getCount()).isEqualTo(0);
-        dao.add(user3);
-        dao.add(user1);
-        assertThat(dao.getCount()).isEqualTo(2);
+    dao.deleteAll();
+    assertThat(dao.getCount()).isEqualTo(0);
+    dao.add(user3);
+    dao.add(user1);
+    assertThat(dao.getCount()).isEqualTo(2);
 
-        User userGet = dao.get(user3.getId());
-        checkSameUser(userGet, user3);
+    User userGet = dao.get(user3.getId());
+    checkSameUser(userGet, user3);
 
-        User userGet1 = dao.get(user1.getId());
-        checkSameUser(userGet1, user1);
-    }
+    User userGet1 = dao.get(user1.getId());
+    checkSameUser(userGet1, user1);
+  }
 
-    @Test
-    void UserDaoXMLTest() throws SQLException, ClassNotFoundException {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("test.xml");
+  @Test
+  void UserDaoXMLTest() throws SQLException, ClassNotFoundException {
+    ApplicationContext applicationContext = new ClassPathXmlApplicationContext("test.xml");
 //        ApplicationContext applicationContext = new GenericXmlApplicationContext("com/example/tobby/user/dao/applicationContext.xml");
-        UserDao dao = applicationContext.getBean("userDao", UserDao.class);
-        dao.add(user3);
-        System.out.println("succeed " + user3.getId());
+    UserDao dao = applicationContext.getBean("userDao", UserDao.class);
+    dao.add(user3);
+    System.out.println("succeed " + user3.getId());
 
-        User user1 = dao.get(user3.getId());
-        System.out.println(user1.getId());
-        System.out.println(user1.getName());
-        System.out.println(user1.getPassword());
-        System.out.println("succeed" + user1.getId());
-    }
+    User user1 = dao.get(user3.getId());
+    System.out.println(user1.getId());
+    System.out.println(user1.getName());
+    System.out.println(user1.getPassword());
+    System.out.println("succeed" + user1.getId());
+  }
 
-    @Test
-    void userDaoReturnSameObj() {
+  @Test
+  void userDaoReturnSameObj() {
 //        DaoFactory daoFactory = new DaoFactory();
 //        UserDao dao = daoFactory.userDao();
 //        UserDao dao1 = daoFactory.userDao();
@@ -124,104 +125,105 @@ class UserDaoTest {
 //        UserDao dao3 = context.getBean("userDao", UserDao.class);
 //        System.out.println("dao2 = " + dao2);
 //        System.out.println("dao3 = " + dao3);
-    }
+  }
 
-    @Test
-    public void count() throws SQLException, ClassNotFoundException {
-        GenericApplicationContext context = new GenericXmlApplicationContext("test.xml");
-        UserDao dao = context.getBean("userDao", UserDao.class);
+  @Test
+  public void count() throws SQLException, ClassNotFoundException {
+    GenericApplicationContext context = new GenericXmlApplicationContext("test.xml");
+    UserDao dao = context.getBean("userDao", UserDao.class);
 
-        dao.deleteAll();
-        assertThat(dao.getCount()).isEqualTo(0);
-        dao.add(user3);
-        assertThat(dao.getCount()).isEqualTo(1);
-        dao.add(user1);
-        assertThat(dao.getCount()).isEqualTo(2);
-        dao.add(user2);
-        assertThat(dao.getCount()).isEqualTo(3);
-    }
+    dao.deleteAll();
+    assertThat(dao.getCount()).isEqualTo(0);
+    dao.add(user3);
+    assertThat(dao.getCount()).isEqualTo(1);
+    dao.add(user1);
+    assertThat(dao.getCount()).isEqualTo(2);
+    dao.add(user2);
+    assertThat(dao.getCount()).isEqualTo(3);
+  }
 
-    @Test
-    public void getUserFailure() throws SQLException {
-        dao.deleteAll();
-        assertThat(dao.getCount()).isEqualTo(0);
-        assertThrows(EmptyResultDataAccessException.class, () -> {
-            dao.get("unknown");
-        });
-    }
+  @Test
+  public void getUserFailure() throws SQLException {
+    dao.deleteAll();
+    assertThat(dao.getCount()).isEqualTo(0);
+    assertThrows(EmptyResultDataAccessException.class, () -> {
+      dao.get("unknown");
+    });
+  }
 
-    private void checkSameUser(User user, User user1) {
-        assertThat(user.getId()).isEqualTo(user1.getId());
-        assertThat(user.getPassword()).isEqualTo(user1.getPassword());
-        assertThat(user.getName()).isEqualTo(user1.getName());
-        assertThat(user.getLevel()).isEqualTo(user1.getLevel());
-        assertThat(user.getLogin()).isEqualTo(user1.getLogin());
-        assertThat(user.getRecommend()).isEqualTo(user1.getRecommend());
-    }
+  private void checkSameUser(User user, User user1) {
+    assertThat(user.getId()).isEqualTo(user1.getId());
+    assertThat(user.getPassword()).isEqualTo(user1.getPassword());
+    assertThat(user.getName()).isEqualTo(user1.getName());
+    assertThat(user.getLevel()).isEqualTo(user1.getLevel());
+    assertThat(user.getLogin()).isEqualTo(user1.getLogin());
+    assertThat(user.getRecommend()).isEqualTo(user1.getRecommend());
+  }
 
-    @Test
-    public void getAll() throws SQLException, ClassNotFoundException {
-        dao.deleteAll();
-        dao.add(user1);//yeji
-        List<User> users1 = dao.getAll();
-        assertThat(users1.size()).isEqualTo(1);
-        checkSameUser(user1, users1.get(0));
-        dao.add(user2);//doyun
-        List<User> users2 = dao.getAll();
-        assertThat(users2.size()).isEqualTo(2);
-        checkSameUser(user1, users2.get(0));
-        checkSameUser(user2, users2.get(1));
-        dao.add(user3);//mtak
-        List<User> users3 = dao.getAll();
-        assertThat(users3.size()).isEqualTo(3);
-        checkSameUser(user1, users3.get(0));
-        checkSameUser(user2, users3.get(1));
-        checkSameUser(user3, users3.get(2));
-        dao.deleteAll();
-        List<User> users0 = dao.getAll();
-        assertThat(users0.size()).isEqualTo(0);
-    }
+  @Test
+  public void getAll() throws SQLException, ClassNotFoundException {
+    dao.deleteAll();
+    dao.add(user1);//yeji
+    List<User> users1 = dao.getAll();
+    assertThat(users1.size()).isEqualTo(1);
+    checkSameUser(user1, users1.get(0));
+    dao.add(user2);//doyun
+    List<User> users2 = dao.getAll();
+    assertThat(users2.size()).isEqualTo(2);
+    checkSameUser(user1, users2.get(0));
+    checkSameUser(user2, users2.get(1));
+    dao.add(user3);//mtak
+    List<User> users3 = dao.getAll();
+    assertThat(users3.size()).isEqualTo(3);
+    checkSameUser(user1, users3.get(0));
+    checkSameUser(user2, users3.get(1));
+    checkSameUser(user3, users3.get(2));
+    dao.deleteAll();
+    List<User> users0 = dao.getAll();
+    assertThat(users0.size()).isEqualTo(0);
+  }
 
-    @Test
-    public void duplicateKey() {
-        assertThrows(DuplicateKeyException.class, () -> {
-            dao.deleteAll();
-            dao.add(user1);
-            dao.add(user1);
-        });
-    }
+  @Test
+  public void duplicateKey() {
+    assertThrows(DuplicateKeyException.class, () -> {
+      dao.deleteAll();
+      dao.add(user1);
+      dao.add(user1);
+    });
+  }
 
-    @Autowired
-    DataSource dataSource;
+  @Autowired
+  DataSource dataSource;
 
-    @Test
-    public void sqlExceptionTranslate() {
-        dao.deleteAll();
-        try {
-            dao.add(user1);
-            dao.add(user1);
-        } catch (DuplicateKeyException e) {
-            SQLException sqlEx = (SQLException)e.getRootCause();
-            SQLExceptionTranslator set =
-                    new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
-            assertThat(set.translate(null, null, sqlEx)).isInstanceOf(DuplicateKeyException.class);
-        }
+  @Test
+  public void sqlExceptionTranslate() {
+    dao.deleteAll();
+    try {
+      dao.add(user1);
+      dao.add(user1);
+    } catch (DuplicateKeyException e) {
+      SQLException sqlEx = (SQLException) e.getRootCause();
+      SQLExceptionTranslator set =
+          new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+      assertThat(set.translate(null, null, sqlEx)).isInstanceOf(DuplicateKeyException.class);
     }
-    @Test
-    public void update() {
-        dao.deleteAll();
-        dao.add(user1);
-        dao.add(user2);
-        user1.setName("루삥뽕");
-        user1.setPassword("0000");
-        user1.setLevel(Level.GOLD);
-        user1.setLogin(1000);
-        user1.setRecommend(999);
-        dao.update(user1);
-        User user1update = dao.get(user1.getId());
-        checkSameUser(user1, user1update);
-        User user2same = dao.get(user2.getId());
-        checkSameUser(user2, user2same);
-    }
+  }
+
+  @Test
+  public void update() {
+    dao.deleteAll();
+    dao.add(user1);
+    dao.add(user2);
+    user1.setName("루삥뽕");
+    user1.setPassword("0000");
+    user1.setLevel(Level.GOLD);
+    user1.setLogin(1000);
+    user1.setRecommend(999);
+    dao.update(user1);
+    User user1update = dao.get(user1.getId());
+    checkSameUser(user1, user1update);
+    User user2same = dao.get(user2.getId());
+    checkSameUser(user2, user2same);
+  }
 
 }

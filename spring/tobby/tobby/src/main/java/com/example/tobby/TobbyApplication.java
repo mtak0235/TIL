@@ -14,8 +14,8 @@ import java.sql.SQLException;
 @SpringBootApplication
 public class TobbyApplication {
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        SpringApplication.run(TobbyApplication.class, args);
-    }
+  public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    SpringApplication.run(TobbyApplication.class, args);
+  }
 
 }

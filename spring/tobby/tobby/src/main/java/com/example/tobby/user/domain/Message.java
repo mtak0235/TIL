@@ -1,17 +1,18 @@
 package com.example.tobby.user.domain;
 
 public class Message {
-    String text;
 
-    private Message(String text) {
-        this.text = text;
-    }
+  String text;
 
-    public String getText() {
-        return text;
-    }
+  private Message(String text) {
+    this.text = text;
+  }
 
-    public static Message newMessage(String text) {
-        return new Message(text);
-    }
+  public String getText() {
+    return text;
+  }
+
+  public static Message newMessage(String text) {
+    return new Message(text);
+  }
 }

@@ -8,15 +8,16 @@ import javax.sql.DataSource;
 
 @Configuration
 public class DaoFactory {
-    @Bean
-    public DataSource dataSource(){
-        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-        dataSource.setDriverClass(com.mysql.cj.jdbc.Driver.class);
-        dataSource.setUrl("jdbc:mysql://localhost/tobby");
-        dataSource.setUsername("tobaby");
-        dataSource.setPassword("0000");
-        return dataSource;
-    }
+
+  @Bean
+  public DataSource dataSource() {
+    SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+    dataSource.setDriverClass(com.mysql.cj.jdbc.Driver.class);
+    dataSource.setUrl("jdbc:mysql://localhost/tobby");
+    dataSource.setUsername("tobaby");
+    dataSource.setPassword("0000");
+    return dataSource;
+  }
 //    @Bean
 //    public UserDao userDao() {
 //        UserDao userDao = new UserDao();
@@ -24,9 +25,9 @@ public class DaoFactory {
 //        return userDao;
 //    }
 
-    @Bean
-    public ConnectionMaker connectionMaker() {
-        return new DConnectionMaker();
-    }
+  @Bean
+  public ConnectionMaker connectionMaker() {
+    return new DConnectionMaker();
+  }
 }
 

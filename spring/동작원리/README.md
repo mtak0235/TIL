@@ -35,7 +35,7 @@ public class UserDao {
 
 2. firstName으로 조회하는 기능을 추가해보자
 
-🙄DataSource 를  만드는 코드가 중복되니까 미리 메소드를 빼자
+🙄DataSource 를 만드는 코드가 중복되니까 미리 메소드를 빼자
 
 ```java
 public class UserDao {
@@ -66,8 +66,8 @@ public class UserDao {
 
 3. ProductDao를 추가해보자
 
-🙄ProductDao도 DataSource를 만드는 코드가 또 필요하겠군. 뿐만 아니라 매 쿼리마다 DataSource를 만들다니 메모리 잡아먹게...   DataSource를 따로 싱글톤으로 관리해야겠다.
-😎 UserDao에서 DataSource의존 안해도 되네?!
+🙄ProductDao도 DataSource를 만드는 코드가 또 필요하겠군. 뿐만 아니라 매 쿼리마다 DataSource를 만들다니 메모리 잡아먹게... DataSource를 따로
+싱글톤으로 관리해야겠다. 😎 UserDao에서 DataSource의존 안해도 되네?!
 
 ```java
 import com.mysql.cj.jdbc.MysqlDataSource;
@@ -111,8 +111,9 @@ public class UserDao {
 }
 ```
 
-🤔Dao들은 dataSource 를 어디서 가져와야되는지(Application)를 계속 알고 있어야 하네? Application.INSTANCE.dataSource()로 가져오니까...
-🤔종속성이 더 복잡해지면 그 처리하는걸 Application에 다 때려 넣어야 될텐데 ,Application 겁나 뚱뚱해지겠네? 나중에 그것도 찢어발겨야 하는 시점이 오겠지?
+🤔Dao들은 dataSource 를 어디서 가져와야되는지(Application)를 계속 알고 있어야 하네? Application.INSTANCE.dataSource()로
+가져오니까... 🤔종속성이 더 복잡해지면 그 처리하는걸 Application에 다 때려 넣어야 될텐데 ,Application 겁나 뚱뚱해지겠네? 나중에 그것도 찢어발겨야 하는
+시점이 오겠지?
 
 ## Inversion of Control
 
@@ -168,7 +169,8 @@ public class MyApplication {
 
 ## Dependency Injection Containers
 
-😅 caller: "UserDao가 DataSource 항상 필요로 해서 제가 넣어는 주고 있는데, 전 할 일이 많다구요.. 누가 UserDao에게 DataSource좀 잘 구성해서 걔한테 주면 안될까요? 제가 꼭 DataSource를 걔한테 넣어 줘야겠어요?"
+😅 caller: "UserDao가 DataSource 항상 필요로 해서 제가 넣어는 주고 있는데, 전 할 일이 많다구요.. 누가 UserDao에게 DataSource좀 잘
+구성해서 걔한테 주면 안될까요? 제가 꼭 DataSource를 걔한테 넣어 줘야겠어요?"
 
 😎Dependency Injection Container: "날 불렀는가 휴먼"
 
@@ -197,8 +199,8 @@ public class MyApplication {
 }
 ```
 
-😎caller : "2.에서 우린  필요한거 다 있는(dataSource까지 갖춘) 완전한 UserDao를 얻을 수 있다.  뿐만 아니라 여차하면 ApplicationContext 형님이 관리중인 DataSource를 직빵으로 받을 수도 있지.
-우리가 형님에게 드려야 할 것은 종속 의존 관계를 담은 reference(someConfigClass)야. "
+😎caller : "2.에서 우린 필요한거 다 있는(dataSource까지 갖춘) 완전한 UserDao를 얻을 수 있다. 뿐만 아니라 여차하면 ApplicationContext
+형님이 관리중인 DataSource를 직빵으로 받을 수도 있지. 우리가 형님에게 드려야 할 것은 종속 의존 관계를 담은 reference(someConfigClass)야. "
 
 그 레퍼런스 제가 만들어보죠
 
@@ -226,15 +228,16 @@ public class MyApplicationContextConfiguration {  // (1)
 }
 ```
 
-spring dependency injection container소개하기 전에 만든 Application에서 의존 관계 처리하던 거랑 비슷한데 얘는 DataSource 싱글톤으로 관리하는 코드 안짜도 되네? @Configuration에 그 코드가 있구나..!
+spring dependency injection container소개하기 전에 만든 Application에서 의존 관계 처리하던 거랑 비슷한데 얘는 DataSource 싱글톤으로
+관리하는 코드 안짜도 되네? @Configuration에 그 코드가 있구나..!
 
 > AnnotationConfigApplicationContext 꼭 써야되나요?
->   XML파일이나 annotated Java Configuration Class(?) 같은거 써도 되는데,
-> 스프링이 제공하는 annotation  쓰는 Java Class 쓰려면 별 수 있나;;
-> XML  파일 쓰는 ApplicationContext 구현체는 `ClassPathXmlApplicationContext`니까 필요하면 대신 쓰던가
+> XML파일이나 annotated Java Configuration Class(?) 같은거 써도 되는데,
+> 스프링이 제공하는 annotation 쓰는 Java Class 쓰려면 별 수 있나;;
+> XML 파일 쓰는 ApplicationContext 구현체는 `ClassPathXmlApplicationContext`니까 필요하면 대신 쓰던가
 >
-> @Bean 이 뭐야요. 
-> MyApplicationContextConfiguration 에 있는 factory method들 (dataSource(), userDao())은  딱 UserDao를 뭘로 만드는지에 대한 정보만 있어. DataSource도 마찬가지고.
+> @Bean 이 뭐야요.
+> MyApplicationContextConfiguration 에 있는 factory method들 (dataSource(), userDao())은 딱 UserDao를 뭘로 만드는지에 대한 정보만 있어. DataSource도 마찬가지고.
 > 참고로 저 factory method들이 만든 인스턴스를 Spring beans라고 부른다?
 > 😁`@Bean` : 제 아를 Spring bean으로 만들어 주십쇼 행님
 >
@@ -269,7 +272,7 @@ spring dependency injection container소개하기 전에 만든 Application에�
 > }
 > ```
 >
-> 
+>
 
 쨋든 갓만든 레퍼런스 한번 써보겠습니다.
 
@@ -291,7 +294,7 @@ public class MyApplication {
 
 ## Spring java config
 
-방금 만든 `MyApplicationContextConfiguration`이  spring java config임.
+방금 만든 `MyApplicationContextConfiguration`이 spring java config임.
 
 ```java
 import org.springframework.context.annotation.Bean;
@@ -317,7 +320,10 @@ public class MyApplicationContextConfiguration {
 }
 ```
 
-🤔아 근데 물론 caller가 `new UserDao(Application.INSTANCE.dataSource())`하던 시절에서 진화해  `new AnnotationConfigApplicationContext(MyApplicationContextConfiguration.class).getBean(UserDao.class)`하게 된 것 까지는 좋았는데,, `MyApplicationContextConfiguration.class`까 보니까 또 dataSource를 직접 집어넣고 있네..(`new UserDao(dataSource())`) 다른 방법 없나?
+🤔아 근데 물론 caller가 `new UserDao(Application.INSTANCE.dataSource())`하던 시절에서
+진화해  `new AnnotationConfigApplicationContext(MyApplicationContextConfiguration.class).getBean(UserDao.class)`
+하게 된 것 까지는 좋았는데,, `MyApplicationContextConfiguration.class`까 보니까 또 dataSource를 직접 집어넣고
+있네..(`new UserDao(dataSource())`) 다른 방법 없나?
 
 😎`@ComponentScan`만 있다면 쌉가능
 
@@ -343,7 +349,8 @@ public class MyApplicationContextConfiguration {
 }
 ```
 
-😎`@ComponentScan` : MyApplicationContextConfiguration가 속한 패키지의 모든 class를 털어서 Spring Bean처럼 보이는(@Component가 붙은) 게 나오면 싸그리 bean으로 만들갔어.
+😎`@ComponentScan` : MyApplicationContextConfiguration가 속한 패키지의 모든 class를 털어서 Spring Bean처럼 보이는(
+@Component가 붙은) 게 나오면 싸그리 bean으로 만들갔어.
 
 ```java
 import javax.sql.DataSource;
@@ -381,7 +388,7 @@ public class UserDao {
 }
 ```
 
-🤔굳이 생성자로  의존성 주입 해야됨?
+🤔굳이 생성자로 의존성 주입 해야됨?
 
 ㄴㄴ. 바로 때려넣어도 됨 (aka Filed스타일)
 
@@ -416,15 +423,9 @@ public class UserDao {
 }
 ```
 
-
-
 # Spring Aspect-Oriented Programming(AOP)
 
-
-
-
-
-#  스프링의 핵심 기술 
+# 스프링의 핵심 기술
 
 a.k.a spring core
 
@@ -448,7 +449,7 @@ implementation of IOC (inversion of control)
 * called DI(dependecy injection)
 * 객체가 생성되거나, factory method로부터 반환될 때!
   의존하는 객체들을 **다양한 형태**로 주입 받는 것.
-  * 생성자의 매개변수로 들어가거나, factory method의 매개변수로 들어가거나, 그 객체의 setter로 주입할 수 있다.
+    * 생성자의 매개변수로 들어가거나, factory method의 매개변수로 들어가거나, 그 객체의 setter로 주입할 수 있다.
 
 
 

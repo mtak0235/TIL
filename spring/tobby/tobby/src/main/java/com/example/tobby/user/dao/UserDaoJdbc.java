@@ -12,27 +12,27 @@ import java.util.List;
 
 public class UserDaoJdbc implements UserDao {
 
-    private final RowMapper<User> userMapper = new RowMapper<>() {
-        @Override
-        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            User user = new User();
-            user.setId(rs.getString("id"));
-            user.setName(rs.getString("name"));
-            user.setPassword(rs.getString("password"));
-            user.setEmail(rs.getString("email"));
-            user.setLevel(Level.valueOf(rs.getInt("level")));
-            user.setLogin(rs.getInt("login"));
-            user.setRecommend(rs.getInt("recommend"));
-            return user;
-        }
-    };
-    private JdbcTemplate jdbcTemplate;
-
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+  private final RowMapper<User> userMapper = new RowMapper<>() {
+    @Override
+    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+      User user = new User();
+      user.setId(rs.getString("id"));
+      user.setName(rs.getString("name"));
+      user.setPassword(rs.getString("password"));
+      user.setEmail(rs.getString("email"));
+      user.setLevel(Level.valueOf(rs.getInt("level")));
+      user.setLogin(rs.getInt("login"));
+      user.setRecommend(rs.getInt("recommend"));
+      return user;
     }
+  };
+  private JdbcTemplate jdbcTemplate;
 
-    public void add(User user) {
+  public void setDataSource(DataSource dataSource) {
+    this.jdbcTemplate = new JdbcTemplate(dataSource);
+  }
+
+  public void add(User user) {
 //        jdbcContext.workWithStatementStrategy(new StatementStrategy() {
 //
 //            @Override
@@ -45,11 +45,15 @@ public class UserDaoJdbc implements UserDao {
 //                return ps;
 //            }
 //        });
-        this.jdbcTemplate.update("insert into users (id, name, password,email,level, login, recommend) values(?,?,?,?, ?, ?, ?)", user.getId(), user.getName(), user.getPassword(), user.getEmail(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
+    this.jdbcTemplate.update(
+        "insert into users (id, name, password,email,level, login, recommend) values(?,?,?,?, ?, ?, ?)",
+        user.getId(), user.getName(), user.getPassword(), user.getEmail(), user.getLevel()
+                                                                               .intValue(),
+        user.getLogin(), user.getRecommend());
 
-    }
+  }
 
-    public User get(String id) {
+  public User get(String id) {
 //        Connection c = dataSource.getConnection();
 //
 //        PreparedStatement ps = c.prepareStatement(
@@ -70,27 +74,31 @@ public class UserDaoJdbc implements UserDao {
 //        c.close();
 //        if (user == null) throw new EmptyResultDataAccessException(1);
 //        return user;
-        return this.jdbcTemplate.queryForObject("select * from users where id=?", new Object[]{id}, userMapper);
-    }
+    return this.jdbcTemplate.queryForObject("select * from users where id=?", new Object[]{id},
+        userMapper);
+  }
 
-    public void deleteAll() {
-        this.jdbcTemplate.update("delete from users");
-    }
-
+  public void deleteAll() {
+    this.jdbcTemplate.update("delete from users");
+  }
 
 //    abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;
 
-    public int getCount() {
-        return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
-    }
+  public int getCount() {
+    return this.jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+  }
 
-    @Override
-    public void update(User user) {
-        this.jdbcTemplate.update("update users set name=?, password=?, email=?, level=?, login=?, recommend=? where id=?", user.getName(), user.getPassword(), user.getEmail(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId());
-    }
+  @Override
+  public void update(User user) {
+    this.jdbcTemplate.update(
+        "update users set name=?, password=?, email=?, level=?, login=?, recommend=? where id=?",
+        user.getName(), user.getPassword(), user.getEmail(), user.getLevel()
+                                                                 .intValue(), user.getLogin(),
+        user.getRecommend(), user.getId());
+  }
 
-    public List<User> getAll() {
+  public List<User> getAll() {
 
-        return this.jdbcTemplate.query("select * from users order by id", userMapper);
-    }
+    return this.jdbcTemplate.query("select * from users order by id", userMapper);
+  }
 }

@@ -13,19 +13,20 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = "/FactoryBeanTest-context.xml")
 class MessageFactoryBeanTest {
-    @Autowired
-    ApplicationContext context;
 
-    @Test
-    public void getMessageFromFactoryBean() {
-        Object message = context.getBean("message");
-        assertThat(message).isInstanceOf(Message.class);
-        assertThat(((Message) message).getText()).isEqualTo("Factory bean");
-    }
+  @Autowired
+  ApplicationContext context;
 
-    @Test
-    public void getFactoryBean() {
-        Object factory = context.getBean("&message");
-        assertThat(factory).isInstanceOf(MessageFactoryBean.class);
-    }
+  @Test
+  public void getMessageFromFactoryBean() {
+    Object message = context.getBean("message");
+    assertThat(message).isInstanceOf(Message.class);
+    assertThat(((Message) message).getText()).isEqualTo("Factory bean");
+  }
+
+  @Test
+  public void getFactoryBean() {
+    Object factory = context.getBean("&message");
+    assertThat(factory).isInstanceOf(MessageFactoryBean.class);
+  }
 }
