@@ -19,7 +19,7 @@
 * 데이터 베이스
   * 정보 시스템 안에서 데이터를 저장하고 있다가 필요할 때 제공하는 역할을 담당
 
-![image-20231231092419492](/Users/mtak/Library/Application Support/typora-user-images/image-20231231092419492.png)
+![image-20231231092419492](./assets/image-20231231092419492.png)
 
 * 데이터 베이스
   * 특정 조직의 여로 사용자가 **공유**하여 사용할 수 있도록 **통합**해서 **저장**한 **운영**데이터의 집합
@@ -85,7 +85,7 @@
       * 백업과 회복 방법이 복잡
       * 중앙 집중 관리로 인한 취약점
 
-![image-20231231094135861](/Users/mtak/Library/Application Support/typora-user-images/image-20231231094135861.png)
+![image-20231231094135861](./assets/image-20231231094135861.png)
 
 * DBMS  발전 과정
 
@@ -94,14 +94,14 @@
     * 네트워크 DBMS
 
       * 구조가 복잡하고 변경이 어렵다. 
-      * Ex. IDS![image-20231231094737622](/Users/mtak/Library/Application Support/typora-user-images/image-20231231094737622.png)
+      * Ex. IDS![image-20231231094737622](./assets/image-20231231094737622.png)
 
     * 계층 DBMS
 
       *  구조 변경이 어렵다. 
       * Ex. IMS
 
-      ![image-20231231094751060](/Users/mtak/Library/Application Support/typora-user-images/image-20231231094751060.png)
+      ![image-20231231094751060](./assets/image-20231231094751060.png)
 
   * 2세대
 
@@ -115,11 +115,11 @@
       * Ex. O2, ONTOS
     * 객체관계 DBMS
 
-    ![image-20231231095140701](/Users/mtak/Library/Application Support/typora-user-images/image-20231231095140701.png)
+    ![image-20231231095140701](./assets/image-20231231095140701.png)
 
 # 데이터베이스 시스템
 
-![image-20231231095241754](/Users/mtak/Library/Application Support/typora-user-images/image-20231231095241754.png)
+![image-20231231095241754](./assets/image-20231231095241754.png)
 
 * 데이터베이스 시스템(DBS)
 
@@ -173,9 +173,9 @@
 
     * 내부 단계에서 외부 단계로 갈수록 더 abstract됨
 
-  ![image-20231231100328132](/Users/mtak/Library/Application Support/typora-user-images/image-20231231100328132.png)
+  ![image-20231231100328132](./assets/image-20231231100328132.png)
 
-![image-20231231101007454](/Users/mtak/Library/Application Support/typora-user-images/image-20231231101007454.png)
+![image-20231231101007454](./assets/image-20231231101007454.png)
 
 * 외부/개념 사상 (application interface) → 논리적 데이터 독립성
 * 개념/내부 사상 (storage interface) → 물리적 데이터 독립성
