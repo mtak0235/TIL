@@ -13,7 +13,7 @@ public class JpaMain {
         transaction.begin();
         try {
             Member member = em.find(Member.class, 1L);
-            System.out.println("member.getName() = " + member.getName());
+            member.setName("MinKyeong Tak");
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
