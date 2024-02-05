@@ -19,6 +19,7 @@ public class JpaMain {
 //            em.detach(member);
             em.clear();
             System.out.println("==============");
+            Member member1 = em.find(Member.class, 4l);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
