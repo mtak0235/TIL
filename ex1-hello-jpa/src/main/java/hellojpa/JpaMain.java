@@ -16,8 +16,8 @@ public class JpaMain {
         try {
             Member member = em.find(Member.class, 4l);
             member.setName("merci");
-            em.detach(member);
-
+//            em.detach(member);
+            em.clear();
             System.out.println("==============");
             transaction.commit();
         } catch (Exception e) {
