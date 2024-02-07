@@ -10,12 +10,12 @@ public class JpaMain {
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
         EntityManager em = emf.createEntityManager();
-        //code
+        //code`
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         try {
             Member member = new Member();
-            member.setUsername("mtak");
+            member.setUsername("yeji");
             em.persist(member);
             transaction.commit();
         } catch (Exception e) {

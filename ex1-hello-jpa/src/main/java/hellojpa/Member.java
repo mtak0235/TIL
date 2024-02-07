@@ -7,9 +7,10 @@ import java.util.Date;
 
 @Entity
 @Setter
+@SequenceGenerator(name = "member_sequence_gen",sequenceName = "member_seq", initialValue = 1, allocationSize = 1)
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_sequence_gen")
     private Long id;
     @Column(name = "name")
     private String username;
