@@ -15,8 +15,8 @@ import java.util.Date;
 public class Member {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_sequence_gen")
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "member_seq_gen")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_sequence_gen")
+//    @GeneratedValue(strategy = GenerationType.TABLE, generator = "member_seq_gen")
     private Long id;
 
     @Column(name = "name")
