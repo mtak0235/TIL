@@ -14,12 +14,9 @@ public class JpaMain {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         try {
-            Member member = em.find(Member.class, 4l);
-            member.setName("merci");
-//            em.detach(member);
-            em.clear();
-            System.out.println("==============");
-            Member member1 = em.find(Member.class, 4l);
+            Member member = new Member();
+            member.setUsername("mtak");
+            em.persist(member);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
