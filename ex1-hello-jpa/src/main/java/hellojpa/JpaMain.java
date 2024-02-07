@@ -15,8 +15,11 @@ public class JpaMain {
         transaction.begin();
         try {
             Member member = new Member();
-            member.setUsername("yeji");
+            member.setUsername("dd");
+            System.out.println("=================");
             em.persist(member);
+            System.out.println("member.getId() = " + member.getId());
+            System.out.println("=================");
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
