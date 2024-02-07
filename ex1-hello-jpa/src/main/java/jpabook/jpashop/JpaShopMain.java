@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.domain.Team;
 
 public class JpaShopMain {
 
@@ -16,12 +17,14 @@ public class JpaShopMain {
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
         try {
+            Team team = new Team();
+            team.setName("wolf");
+            em.persist(team);
+
             Member member = new Member();
-            member.setName("dd");
-            System.out.println(">=================");
+            member.setName("mtak");
+            member.setTeamId(team.getId());
             em.persist(member);
-            System.out.println("member.getId() = " + member.getId());
-            System.out.println("=================");
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();

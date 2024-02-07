@@ -9,16 +9,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
-public class Member {
-    @Id
-    @GeneratedValue
-    @Column(name = "MEMBER_ID")
-    private Long id;
-    @Column(name = "USERNAME")
-    private String name;
+@NoArgsConstructor
+public class Team {
+    @Id @GeneratedValue
     @Column(name = "TEAM_ID")
-    private Long teamId;
+    private Long id;
+    private String name;
+
 }
