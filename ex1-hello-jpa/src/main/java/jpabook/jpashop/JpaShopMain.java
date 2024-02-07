@@ -23,8 +23,15 @@ public class JpaShopMain {
 
             Member member = new Member();
             member.setName("mtak");
-            member.setTeamId(team.getId());
+            member.setTeam(team);
             em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            Member member1 = em.find(Member.class, member.getId());
+            Team team1 = member1.getTeam();
+            System.out.println("team1.getName() = " + team1.getName());
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
