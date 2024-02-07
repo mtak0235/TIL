@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@Entity
+//@Entity
 @Setter
 @Getter
 //@SequenceGenerator(name = "member_sequence_gen",sequenceName = "member_seq", initialValue = 1, allocationSize = 1)
