@@ -1456,7 +1456,7 @@ SELECT LENGTH ('mtak') FROM dual;
   
   #sol3
   SELECT subway_line,
-  decode(subway_line, 1, 'BLUE', 2, 'GREEN', 3, 'ORANGE','GRAY')
+  DECODE(subway_line, 1, 'BLUE', 2, 'GREEN', 3, 'ORANGE','GRAY')
   FROM subway_info;
   ```
 
@@ -1679,6 +1679,8 @@ SELECT * FROM employee WHERE NOT (title <> 'Sales*' OR  city <>'Calgary')
 
 * GROUP BY 는 WHERE 절 보다 비용이 드는 작업이니까 WHERE절로 최대한 데이터를 걸러내야 한다.
 
+* GROUP BY 절이 없을 때 HAVING절은 테이블을 한개의 그룹으로 처리
+
 > ### SELECT 문의 논리적인 수행 순서
 >
 > ```sql
@@ -1687,7 +1689,7 @@ SELECT * FROM employee WHERE NOT (title <> 'Sales*' OR  city <>'Calgary')
 > WHERE	#2
 > GROUP BY#3
 > HAVING	#4
-> ORDER BY#5
+> ORDER BY#6
 > ```
 
 ![image-20240228205437212](./assets/image-20240228205437212.png)
@@ -1802,25 +1804,15 @@ SELECT * FROM employee WHERE NOT (title <> 'Sales*' OR  city <>'Calgary')
   ### 3개 이상 TABLE JOIN
 
   ```sql
-  SELECT  a.product_name,b.member_id, b.content, c.event_name
+  SELECT a.product_name, b.member_id, b.content, c.event_name
   FROM product a, product_review b, event c
-  WHERE a.product_code=b.product_code AND b.reg_date BETWEEN c.start_date AND c.end_date;
+  WHERE a.product_code = b.product_code
+  AND b.reg_date BETWEEN c.start_date AND c.end_date;
   ```
-
+  
   <img src="./assets/image-20240229003418675.png" alt="image-20240229003418675" style="width:100%;" />
 
 ![image-20240229003228215](./assets/image-20240229003228215.png)
-
-### 3개 이상 table join
-
-```sql
-SELECT a.product_name, b.member_id, b.content, c.event_name
-FROM product a, product_review b, event c
-WHERE a.product_code = b.product_code
-AND b.reg_date BETWEEN c.start_date AND c.end_date;
-```
-
-<img src="./assets/image-20240229123903106.png" alt="image-20240229123903106" style="width:100%;" />
 
 ![image-20240229123938398](./assets/image-20240229123938398.png)
 
@@ -1906,7 +1898,7 @@ AND b.reg_date BETWEEN c.start_date AND c.end_date;
 
 * SQL 에서 오른쪽에 표기된 테이블의 데이터는 무조건 출력되는 JOIN
 
-* 오른쪽 테이블에 JOIN되는 데이터가 없는 row들은 왼쪽 테이블 칼럼의 값이 NULL로 출력
+* dhls쪽 테이블에 JOIN되는 데이터가 없는 row들은 왼쪽 테이블 칼럼의 값이 NULL로 출력
 
   <img src="./assets/image-20240229161357571.png" alt="image-20240229161357571" style="width:100%;" />
 
@@ -1960,6 +1952,8 @@ on a.cast=b.cast;
 
 * 테이블 A와 테이블 B에서 같은 이름을 가진 칼럼들이 모두 동일한 데이터를 가지고 있을 경우 JOIN되는 방식
 
+  * ON 사용 못함
+
   ```sql
   SELECT * FROM running_man;
   SELECT * FROM infinite_challenge;
@@ -1975,25 +1969,48 @@ on a.cast=b.cast;
   ```sql
   #infinite_challenge 테이블의 유재석의 job을 MC로 바꾼다면
   SELECT * FROM infinite_challenge;
+  #유재석 row는 같은 이름의 칼럼 중 job 칼럼이 동일하지 않은 데이터를 가지고 있어서 join 시 출력되지 않는다. 
   SELECT * FROM running_man a NATURAL JOIN infinite_challenge b;
   ```
 
-  <div style="display:flex;">
+  <div style="display:flex;flex-wrap:wrap">
       <img src="./assets/image-20240301003228963.png" alt="image-20240301003228963" style="width:50%;" />
       <img src="./assets/image-20240301003253271.png" style="width:50%;" />
   </div>
 
-  
+* 같은 이름을 가진 칼럼 중 원하는 칼럼만 join에 이용하고 싶다면 USING
 
-![image-20240229175311290](./assets/image-20240229175311290.png)
+  * 공통 칼럼 ( + USING 절 안에 정의된 칼럼의 이름)은 어디에서 쓰이든 테이블 이름이나 alias를 포함하면 안된다.
+
+    ```sql
+    SELECT cast, gender, a.job AS r_job, b.job AS l_job
+    FROM running_man a JOIN inginite_challenge b
+    USING (cast, gender);
+    ```
+
+      <img src="./assets/image-20240301151756383.png" alt="image-20240301151756383" style="width:100%;" />
 
 ![image-20240229175320208](./assets/image-20240229175320208.png)
 
 ![image-20240229175332154](./assets/image-20240229175332154.png)
 
+### CROSS JOIN
 
+* A테이블과 B테이블 사이에 JOIN 조건이 없는 경우, 조합할 수 있는 모든 경우를 출력
 
-![image-20240229175341263](./assets/image-20240229175341263.png)
+  ![image-20240301152509448](./assets/image-20240301152509448.png)
+
+  ```sql
+  SELECT * FROM entertainer;
+  SELECT * FROM drink;
+  SELECT * FROM ENTERTAINER CROSS JOIN drink;
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+    <img src="./assets/image-20240301153705143.png" alt="image-20240301153705143" style="width:50%;" />
+    <img src="./assets/image-20240301153815093.png" alt="image-20240301153815093" style="width:50%;" />
+    <img src="./assets/image-20240301153857552.png" alt="image-20240301153857552" style="width:50%;" />
+  </div>
 
 ![image-20240229175352050](./assets/image-20240229175352050.png)
 
@@ -2035,15 +2052,11 @@ on a.cast=b.cast;
 
 2
 
-
-
 ![image-20240229175652366](./assets/image-20240229175652366.png)
 
 ![image-20240229175709101](./assets/image-20240229175709101.png)
 
 4
-
-
 
 ![image-20240229175721281](./assets/image-20240229175721281.png)
 
@@ -2103,8 +2116,6 @@ distinct
 
 3
 
-
-
 ![image-20240229180017905](./assets/image-20240229180017905.png)
 
 4
@@ -2121,8 +2132,6 @@ distinct
 
 1
 
-
-
 ![image-20240229180126723](./assets/image-20240229180126723.png)
 
 3
@@ -2130,8 +2139,6 @@ distinct
 ![image-20240229180140484](./assets/image-20240229180140484.png)
 
 3
-
-
 
 ![image-20240229180151325](./assets/image-20240229180151325.png)
 
@@ -2141,33 +2148,80 @@ distinct
 
 2
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Chap 4. SQL 활용
 
 ## 1. SubQuery
 
-![image-20240229180512571](./assets/image-20240229180512571.png)
+* 하나의 쿼리 안에 존재하는 또 다른 쿼리
+
+  <img src="./assets/image-20240301170503741.png" alt="image-20240301170503741" style="width:50%;" />
+
+* 위치에 따라 분류하면 다음과 같다.
+
+  * SELECT 절
+    * scalar subquery
+  * FROM 절
+    * inline view
+  * WHERE절, HAVING 절
+    * nested query
 
 ![image-20240229180520324](./assets/image-20240229180520324.png)
 
-![image-20240229180529314](./assets/image-20240229180529314.png)
+### scalar subquery
+
+* 주로 select 절에 위치하지만, 컬럼이 올 수 있는 대부분의 위치에 사용할 수 있다. 
+
+* 칼럼 대신 사용되기 때문에 반드시 하나의 값만을 반환해야 하며 그렇지 않은 경우 에러 발생
+
+  ```sql
+  SELECT m.product_code,
+  (SELECT s.product_code
+  FROM product s
+  WHERE s.product_code = m.product_code) AS product_name,
+  m.member_id,m.content
+  FROM product_review m;
+  
+  SELECT m.product_code,
+  (SELECT s.product_name, s.price
+  FROM product s
+  WHERE s.product_code=m.product_code) AS product_name,
+  m.member_id,m.content,
+  (SELECT s.price 
+  FROM product s 
+  WHERE s.product_code=m.product_code) AS price
+  FROM product_review m;
+  ```
+
+  <img src="./assets/image-20240301171931480.png" alt="image-20240301171931480" style="width:100%;" />
+
+  <img src="./assets/image-20240301172241154.png" alt="image-20240301172241154" style="width:100%;" />
+
+  ```sql
+  SELECT m.product_code,
+  (SELECT s.product_name, s.price
+  FROM product s
+  WHERE s.product_code=m.product_code
+  ) AS product_info,
+  m.member_id, m.content
+  FROM product_review m;
+  ```
+
+  <img src="./assets/image-20240301172901965.png" alt="image-20240301172901965" style="width:50%;" />
 
 ![image-20240229180538878](./assets/image-20240229180538878.png)
 
-![image-20240229180545929](./assets/image-20240229180545929.png)
+### inline view
+
+* FROM 절 등 테이블명이 올 수 있는 위치에 사용 가능
+
+  ```sql
+  SELECT m.product_code, m.product_name,s.price, m.member_id, m.content
+  FROM product_review m,
+  (SELECT product_code, product_name, price FROM product) s 
+  WHERE m.product_code=s.product_code;
+  ```
+
+  <img src="./assets/image-20240301173333223.png" alt="image-20240301173333223" style="width:100%;" />
 
 ![image-20240229180553825](./assets/image-20240229180553825.png)
 
