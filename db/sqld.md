@@ -2227,111 +2227,1136 @@ distinct
 
 ![image-20240229180609723](./assets/image-20240229180609723.png)
 
-![image-20240229180618751](./assets/image-20240229180618751.png)
+### nested subquery
 
-![image-20240229180626811](./assets/image-20240229180626811.png)
+* where절과 having절에 사용할 수 있다. 
+* 메인 쿼리와의 관계에 따라 2가지로 나눈다.
+  * uncorreleated subquery
+    * 메인 쿼리와 관계를 맺고 있지 않음
+  * correlated subquery
+    * 메인 쿼리와 관계를 맺고 있음
+* 반환하는 데이터의 형태에 따라 다음과 같이 나눌 수 있다.
+  * single row subquery
+    * 서브 쿼리가 1건 이하의 데이터를 반환
+    * 단일 행 비교 연산자와 함께 사용
+    * =, <, >, <=, >=, <>
+  * multi row subquery
+    * 서브 쿼리가 여러 건의 데이터를 반환
+    * 다중 행 비교 연산자와 함께 사용
+    * IN, ALL, ANY, SOME, EXISTS
+  * multi column subquery
+    * 서브 쿼리가 여러 칼럼의 데이터를 반환
 
-![image-20240229180636192](./assets/image-20240229180636192.png)
+#### uncorrelated subquery
 
-![image-20240229180644821](./assets/image-20240229180644821.png)
+* 서브 쿼리 내에 메인 쿼리의 칼럼이 존재하지 않음
+
+  ```sql
+  SELECT * FROM agency;
+  
+  SELECT * FROM entertainer;
+  
+  SELECT name, job, birthday, agency_code FROM entertainer
+  WHERE agency_code=(SELECT agency_code FROM agency WHERE agency_name="EDAM엔터테인먼트");
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240302214433767.png" alt="image-20240302214433767" style="width:50%;" />
+      <img src="./assets/image-20240302214452166.png" alt="image-20240302214452166" style="width:50%;" />
+      <img src="./assets/image-20240302214529099.png" alt="image-20240302214529099" style="width:100%;" />
+  </div>
+
+#### correlated subquery
+
+* 서브 쿼리 내에 메인 쿼리의 칼럼이 존재
+
+```sql
+SELECT * FROM cafe_order;
+
+SELECT order_no, drink_code,order_cnt FROM cafe_order a
+WHERE order_cnt=(SELECT max(order_cnt) FROM cafe_order b WHERE b.drink_code=a.drink_code);
+```
+
+<div style="display:flex;flex-wrap:flex">
+    <img src="./assets/image-20240302215017780.png" alt="image-20240302215017780" style="width:50%;" />
+    <img src="./assets/image-20240302215035692.png" alt="image-20240302215035692" style="width:50%;" />
+</div>
+
+#### single row subquery
+
+* 항상 1건 이하의 결과만 반환
+
+  ```sql
+  SELECT * FROM PRODUCT;
+  SELECT * FROM PRODUCT WHERE price=(SELECT max(price) FROM PRODUCT);
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240303000606788.png" alt="image-20240303000606788" style="width:50%;" />
+      <img src="./assets/image-20240303000622805.png" alt="image-20240303000622805" style="width:50%;" />
+  </div>
+
+#### multi row subquery
+
+* 2건 이상의 행을 반환
+
+  ```sql
+  SELECT * FROM PRODUCT;
+  SELECT * FROM product_review;
+  SELECT * FROM PRODUCT WHERE PRODUCT_CODE IN (SELECT PRODUCT_CODE FROM PRODUCT_REVIEW);
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240303000759404.png" alt="image-20240303000759404" style="width:50%;" />
+      <img src="./assets/image-20240303000817903.png" alt="image-20240303000817903" style="width:50%;" />
+      <img src="./assets/image-20240303000917479.png" alt="image-20240303000917479" style="width:50%;" />
+  </div>
+
+#### multi column subquery
+
+```sql
+SELECT * FROM jobs;
+SELECT * FROM employees;
+SELECT * FROM employees WHERE (job_id, salary)
+IN (SELECT job_id, max_salary FROM jobs WHERE max_salary=10000);
+```
+
+<div style="display:flex;flex-wrap:wrap">
+    <img src="./assets/image-20240303001035099.png" alt="image-20240303001035099" style="width:50%;" />
+    <img src="./assets/image-20240303001047640.png" alt="image-20240303001047640" style="width:50%;" />
+    <img src="./assets/image-20240303001209126.png" alt="image-20240303001209126" style="width:100%;" />
+</div>
 
 ![image-20240229180656956](./assets/image-20240229180656956.png)
 
 ![image-20240229180707962](./assets/image-20240229180707962.png)
 
-
-
 ## 2. View
 
-![image-20240229180719349](./assets/image-20240229180719349.png)
+* 특정 SELECT 문에 이름을 붙여서 재사용이 가능하도록 저장해 놓은 오브젝트
 
-![image-20240229180736213](./assets/image-20240229180736213.png)
+  * 가상 테이블
 
+* SQL에서 테이블처럼 사용 가능
 
+  ```sql
+  #view 생성
+  CREATE OR REPLACE VIEW dept_member AS 
+  SELECT a.department_id, a.department_name, b.first_name, b.last_name
+  FROM department a LEFT OUTER JOIN employees b ON a.department_id=b.department_id;
+  
+  SELECT * FROM dept_member WHERE department_name='IT';
+  
+  SELECT department_name, count(*) 
+  FROM dept_member
+  GROUP BY department_name
+  ORDER BY count(*) DESC;
+  
+  #view 삭제
+  DROP VIEW dept_member;
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240303002223452.png" alt="image-20240303002223452" style="width:50%;" />
+      <img src="./assets/image-20240303002236118.png" alt="image-20240303002236118" style="width:50%;" />
+  </div>
+
+![image-20240303002308283](./assets/image-20240303002308283.png)
+
+![image-20240303002328551](./assets/image-20240303002328551.png)
 
 ## 3. 집합 연산자
 
-![image-20240229180747582](./assets/image-20240229180747582.png)
+* 각 쿼리의 결과 집합을 가지고 연산을 하는 명령어
 
-![image-20240229180759006](./assets/image-20240229180759006.png)
+  <table>
+      <tr>
+          <td>UNION ALL</td>
+          <td>
+              <ul>
+                  <li>각 쿼리의 결과 집합의 합집합.</li>
+                  <li>중복된 행도 그대로 출력</li>
+              </ul>
+          </td>
+      </tr>
+      <tr>
+          <td>UNION</td>
+          <td>
+          	<ul>
+                  <li>각 쿼리의 결과 집합의 합집합.</li>
+                  <li>중복된 행은 한 줄로 출력</li>
+              </ul>
+          </td>
+      </tr>
+      <tr>
+          <td>INTERSECT</td>
+          <td>
+  	        <ul>
+                  <li>각 쿼리의 결과 집합의 교집합.</li>
+                  <li>중복된 행은 한 줄로 출력</li>
+              </ul>
+          </td>
+      </tr>
+      <tr>
+          <td>MINUS/EXCEPT</td>
+          <td>
+              <ul>
+                  <li>앞에 있는 쿼리의 결과 집합에서 뒤에 있는 쿼리의 결과 집합을 뺀 차집합</li>
+                  <li>중복된 행은 한 줄로 출력</li>
+              </ul>
+          </td>
+      </tr>
+  </table>
 
-![image-20240229180813668](./assets/image-20240229180813668.png)
+### UNION ALL
 
+* query1의 결과와 query2의 결과를 그대로 합하는 것.
+* 중복된 행도 그대로 출력
 
+<img src="./assets/image-20240303003246501.png" alt="image-20240303003246501" style="width:50%;" />
+
+```sql
+SELECT * FROM running_man;
+SELECT * FROM infinite_challenge;
+SELECT * FROM running_man UNION ALL SELECT * FROM infinite_challenge
+```
+
+<div style="display:flex;flex-wrap:wrap">
+ <img src="./assets/image-20240303003627123.png" alt="image-20240303003627123" style="width:50%;" />   
+    <img src="./assets/image-20240303003642299.png" alt="image-20240303003642299" style="width:50%;" />
+    <img src="./assets/image-20240303003656663.png" alt="image-20240303003656663" style="width:100%;" />
+</div>
+
+### UNION
+
+* query1의 결과와 query 2의 결과를 합한 후 중복을 제거하여 출력
+
+<img src="./assets/image-20240303003836058.png" alt="image-20240303003836058" style="width:50%;" />
+
+```sql
+SELECT * FROM running_man UNION SELECT * FROM infinite_challenge;
+```
+
+<img src="./assets/image-20240303003943286.png" alt="image-20240303003943286" style="width:100%;" />
+
+> 🤔각 쿼리의 결과 집합의 합집합에 중복된 행이 없을 때틑 union all과 union 모두 같은 결과를 얻지만, 
+>
+> union을 사용할 때 데이터베이스 내부적으로 중복된 행을 제거하는 과정을 거쳐야 돼서 성능상 불리할 수 있다. 
+
+### INTERSECT
+
+* query1의 결과와 query2의 결과에서 공통된 부분만 중복을 제거하여 출력
+
+<img src="./assets/image-20240303004319675.png" alt="image-20240303004319675" style="width:50%;" />
+
+```sql
+SELECT * FROM running_man INTERSECT SELECT * FROM infinite_challenge;
+```
+
+<img src="./assets/image-20240303004423716.png" alt="image-20240303004423716" style="width:100%;" />
+
+### MINUS/EXCEPT
+
+* query1의 결과에서 query2의 결과를 제거하고 출력
+
+<img src="./assets/image-20240303004508556.png" alt="image-20240303004508556" style="width:50%;" />
+
+```sql
+SELECT * FROM running_man MINUS  SELECT * FROM infinite_challenge;
+```
+
+<img src="./assets/image-20240303004618701.png" alt="image-20240303004618701" style="width:100%;" />
+
+![image-20240303004640951](./assets/image-20240303004640951.png)
+
+![image-20240303004653723](./assets/image-20240303004653723.png)
+
+![image-20240303004713837](./assets/image-20240303004713837.png)
+
+![image-20240303004727279](./assets/image-20240303004727279.png)
 
 ## 4. 그룹 함수
 
-![image-20240229180828793](./assets/image-20240229180828793.png)
+* 데이터를 group by 하여 나타낼 수 있는 데이터를 구하는 함수
+* 역할에 따라 2가지로 분류된다.
+  * 집계 함수
+    * COUNT, SUM, AVG, MAX etc..
 
-![image-20240229180839970](./assets/image-20240229180839970.png)
+  * 소계(총계) 함수
+    * ROLLUP,CUBE,GROUPING SETS etc..
 
-![image-20240229180850040](./assets/image-20240229180850040.png)
 
-![image-20240229180859613](./assets/image-20240229180859613.png)
+### ROLLUP
 
-![image-20240229180910188](./assets/image-20240229180910188.png)
+* 소그룹 간의 소계 및 총계를 계산하는 함수
 
-![image-20240229180920110](./assets/image-20240229180920110.png)
+<table>
+    <tr>
+	    <td>ROLLUP(A)</td>
+        <td>
+       		<ul>
+                <li>A로 그룹핑</li>                
+                <li>총합계</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+	    <td>ROLLUP(A,B)</td>
+        <td>
+       		<ul>
+                <li>A,B로 그룹핑</li></li>                
+                <li>A로 그룹핑</li>
+            	<li>총합계</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+	    <td>ROLLUP(A,B,C)</td>
+        <td>
+       		<ul>
+                 <li>A,B,C로 그룹핑</li></li>                
+                <li>A,B로 그룹핑</li>
+	            <li>A로 그룹핑</li>
+            	<li>총합계</li>
+            </ul>
+        </td>
+    </tr>
+</table>
 
-![image-20240229180928491](./assets/image-20240229180928491.png)
+```sql
+SELECT * FROM starbucks_order;
 
-![image-20240229180939636](./assets/image-20240229180939636.png)
+SELECT order_dt, couont(*)
+FROM starbucks_order
+GROUP BY ORDER_dt
+ORDER BY order_dt;
+
+SELECT order_dt, count(*)
+FROM starbucks_order
+GROUP BY ROLLUP (order_dt) #날짜 별로 grouping && 합계
+ORDER BY order_dt;
+```
+
+<img src="./assets/image-20240303112543347.png" alt="image-20240303112543347" style="width:100%;" />
+
+<div style="display:flex;">
+    <img src="./assets/image-20240303112621741.png" alt="image-20240303112621741" style="width:50%;" />
+    <img src="./assets/image-20240303112636622.png" alt="image-20240303112636622" style="width:50%;" /></div>
+
+```sql
+SELECT order_dt, order_item, count(*)
+FROM starbucks_order
+GROUP BY order_dt, order_item
+ORDER BY order_dt;
+
+# 날짜별 음료별로 그룹핑 && 날짜별 그룹핑 && 총합계
+SELECT order_dt, order_item,count(*)
+FROM starbucks_order
+GROUP BY ROLLUP(order_dt, order_item)
+ORDER BY order_dt;
+```
+
+<div style="display:flex">
+    <img src="./assets/image-20240303131209711.png" alt="image-20240303131209711" style="width:50%;" />
+    <img src="./assets/image-20240303131223064.png" alt="image-20240303131223064" style="width:50%;" />
+</div>
+
+```sql
+SELECT order_dt, order_item, reg_name, count(*)
+FROM starbucks_order
+GROUP BY order_dt, order_item, reg_name
+GROUP BY order_dt;
+
+# 날짜별 주문음료별 판매사원별 그룹핑 && 날짜별 주문음료별 그룹핑 && 날짜별 그룹핑 && 총합계
+SELECT order_dt, order_item, reg_name, count(*)
+FROM starbucks_order
+GROUP BY ROLLUP (order_dt, order_item, reg_name)
+GROUP BY order_dt;
+
+
+```
+
+<div style="display:flex">
+    <img src="./assets/image-20240303131252494.png" alt="image-20240303131252494" style="width:50%;" />
+    <img src="./assets/image-20240303132458837.png" alt="image-20240303132458837" style="width:50%;" />
+</div>
+
+```sql
+# 날짜별 주문음료별 판매사원별 그룹핑 && 날짜별 주문음료별 그룹핑 && 총합계
+# ROLLUP (order_dt, order_item, reg_name)에서 날짜별 그룹핑이 빠짐
+SELECT order_dt, order_item, reg_name, count(*)
+FROM starbucks_order
+GROUP BY ROLLUP ((order_dt, order_item), reg_name) 
+GROUP BY order_dt;
+
+# 날짜별 주문음료별 판매사원별 그룹핑 && 날짜별 그룹핑 && 총합계
+# ROLLUP (order_dt, order_item, reg_name)에서 && 날짜별 주문음료별 그룹핑이 빠짐
+SELECT order_dt, order_item, reg_name, count(*)
+FROM starbucks_order
+GROUP BY ROLLUP (order_dt, (order_item, reg_name))
+GROUP BY order_dt;
+```
+
+<div style="display:flex;">
+    <img src="./assets/image-20240303133105899.png" alt="image-20240303133105899" style="width:50%;" />
+    <img src="./assets/image-20240303133146824.png" alt="image-20240303133146824" style="width:50%;" />
+</div>
+
+![image-20240303133420870](./assets/image-20240303133420870.png)
+
+![image-20240303133439480](./assets/image-20240303133439480.png)
+
+### CUBE
+
+* 소그룹 간의 소계 및 총계를 다차원적으로 계산할 수 있는 함수
+* GROUP BY가 일방향으로 그룹핑하며 소계를 구했다면 CUBE는 <span style="color:#9195F6">**조합할 수 있는 모든**</span> 그룹에 대한 소계를 집계
+
+<table>
+    <tr>
+        <td>CUBE(A)</td>
+        <td>
+       		<ul>
+                <li>A로 그룹핑</li>
+                <li>총합계</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>CUBE(A,B)</td>
+        <td>
+       		<ul>
+                <li>A,B로 그룹핑</li>
+                <li>A로 그룹핑</li>
+                <li>B로 그룹핑</li>
+                <li>총합계</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>CUBE(A,B,C)</td>
+        <td>
+       		<ul>
+                <li>A,B,C로 그룹핑</li>
+                <li>A,B로 그룹핑</li>
+                <li>A,C로 그룹핑</li>
+                <li>B,C로 그룹핑</li>
+                <li>A로 그룹핑</li>
+                <li>B로 그룹핑</li>
+                <li>C로 그룹핑</li>
+                <li>총합계</li>
+            </ul>
+        </td>
+    </tr>
+</table>
+
+```sql
+SELECT order_dt, COUNT(*)
+FROM starbucks_order
+GROUP BY order_dt
+ORDER BY order_dt;
+
+#날짜별 그룹핑 && 총합계
+# rollup(order_dt)와 결과 같음
+SELECT order_dt, order_item, COUNT(*)
+FROM starbucks_order
+GROUP BY CUBE(order_dt)
+ORDER BY order_dt;
+```
+
+<img src="./assets/image-20240303134712335.png" alt="image-20240303134712335" style="width:80%;" />
+
+```sql
+SELECT order_dt, order_item, COUNT(*)
+FROM starbucks_order
+GROUP BY order_dt, order_item
+ORDER BY order_dt;
+
+#날짜별 주문음료별 그룹핑 && 날짜별 그룹핑 && 주문음료별 그룹핑 && 총합계
+SELECT order_dt, order_item, COUNT(*) 
+FROM starbucks_order
+GROUP BY CUBE(order_dt, order_item)
+ORDER BY order_dt;
+
+#위 쿼리를 풀어쓰면
+SELECT order_dt, order_item, COUNT(*) 
+FROM starbucks_order
+GROUP BY order_dt, order_item
+UNION ALL 
+SELECT order_dt, NULL , COUNT(*)
+FROM starbucks_order
+GROUP BY order_dt
+UNION ALL
+SELECT NULL , NULL , COUNT(*) 
+FROM starbucks_order
+ORDER BY 1,2;
+```
+
+<div style="display:flex">
+    <img src="./assets/image-20240303140157206.png" alt="image-20240303140157206" style="width:50%;" />
+    <img src="./assets/image-20240303140404059.png" alt="image-20240303140404059" style="width:50%;" />
+</div>
+
+```sql
+SELECT order_dt, order_item, reg_name, COUNT(*) 
+FROM starbucks_order
+GROUP BY order_dt, order_item, reg_name
+ORDER BY order_dt;
+
+#날짜별 주문음료별 판매사원별 그룸핑 && 날짜별 주문음료별 그룹핑 && 날짜별 판매사원별 그룸핑 
+# && 날짜별 그룹핑 && 주문음료별 그룹핑 && 판매사원별 그룹핑 && 총합계
+SELECT order_dt, order_item, reg_name, COUNT(*) 
+FROM starbucks_order
+GROUP BY CUBE (order_dt, order_item, reg_name)
+ORDER BY order_dt;
+```
+
+<div style="display:flex">
+    <img src="./assets/image-20240303141110027.png" alt="image-20240303141110027" style="width:50%;" />
+    <img src="./assets/image-20240303141354440.png" alt="image-20240303141354440" style="width:50%;" />
+</div>
+
+```sql
+# 날짜별 주문음료별 판매사원별 그룹핑 && 날짜별 주문음료별 그룹핑 && 판매사원별 그룹핑 && 총합계
+SELECT order_dt, order_item, reg_name, COUNT(*) 
+FROM starbucks_order
+GROUP BY CUBE ((order_dt, order_item), reg_name)
+ORDER BY order_dt;
+
+# 날짜별 주문음료별 판매사원별 그룹핑 && 날짜별 그룹핑 && 주문음료별 판매사원별 그룹핑 && 총합계
+SELECT order_dt, order_item, reg_name, COUNT(*) 
+FROM starbucks_order
+GROUP BY CUBE (order_dt, (order_item, reg_name))
+ORDER BY order_dt;
+```
+
+<div style="display:flex">
+    <img src="./assets/image-20240303145133235.png" alt="image-20240303145133235" style="width:50%;" />
+    <img src="./assets/image-20240303145146930.png" alt="image-20240303145146930" style="width:50%;" />
+</div>
 
 ![image-20240229180951374](./assets/image-20240229180951374.png)
 
 ![image-20240229180959645](./assets/image-20240229180959645.png)
 
-![image-20240229181009304](./assets/image-20240229181009304.png)
+### GROUPING SETS
 
-![image-20240229181018843](./assets/image-20240229181018843.png)
+* 특정 항목에 대한 소계를 계산하는 함수
+* 인자 값으로 ROLLUP이나 CUBE를 사용할 수 있다.
 
-![image-20240229181029398](./assets/image-20240229181029398.png)
+<table>
+    <tr>
+        <td>GROUPING SETS(A, B)</td>
+        <td>
+            <or>
+            	<li>A로 그룹핑</li>
+                <li>B로 그룹핑</li>
+            </or>
+        </td>
+    </tr>
+    <tr>
+        <td>GROUPING SETS(A, B, ())</td>
+        <td>
+            <or>
+            	<li>A로 그룹핑</li>
+                <li>B로 그룹핑</li>
+                <li>총합계</li>
+            </or>
+        </td>
+    </tr>
+    <tr>
+        <td>GROUPING SETS(A, ROLLUP(B))</td>
+        <td>
+            <or>
+            	<li>A로 그룹핑</li>
+                <li>B로 그룹핑</li>
+                <li>총합계</li>
+            </or>
+        </td>
+    </tr>
+    <tr>
+       <td>GROUPING SETS(A, ROLLUP(B, C))</td>
+        <td>
+            <or>
+            	<li>A로 그룹핑</li>
+                <li>B,C로 그룹핑</li>
+                 <li>B로 그룹핑</li>
+                <li>총합계</li>
+            </or>
+        </td>
+    </tr>
+    <tr>
+        <td>GROUPING SETS(A, B, ROLLUP(C))</td>
+        <td>
+            <or>
+            	<li>A로 그룹핑</li>
+                <li>B로 그룹핑</li>
+                 <li>C로 그룹핑</li>
+                <li>총합계</li>
+            </or>
+        </td>
+    </tr>
+</table>
 
-![image-20240229181040932](./assets/image-20240229181040932.png)
+```sql
+SELECT order_dt, order_item, COUNT(*) 
+FROM starbucks_order
+GROUP BY order_dt, order_item
+ORDER BY order_dt;
 
-![image-20240229181050755](./assets/image-20240229181050755.png)
+#날짜별 그룹핑 && 주문음료별 그룹핑
+SELECT order_dt, order_item, COUNT(*) 
+FROM starbucks_order
+GROUP BY GROUPING SETS (order_dt, order_item)
+ORDER BY order_dt;
 
-![image-20240229181102500](./assets/image-20240229181102500.png)
+#날짜별 그룹핑 && 주문음료별 그룹핑 && 총계
+#sol1
+SELECT order_dt, order_item, COUNT(*) 
+FROM starbucks_order
+GROUP BY GROUPING SETS (order_dt, order_item, ())
+ORDER BY order_dt;
+#sol2
+SELECT order_dt, order_item, COUNT(*) 
+FROM starbucks_order
+GROUP BY GROUPING SETS (order_dt, ROLLUP(order_item))
+ORDER BY order_dt;
+```
 
-![image-20240229181113881](./assets/image-20240229181113881.png)
+<div style="display:flex;flex-wrap:wrap">
+    <img src="./assets/image-20240303150953450.png" alt="image-20240303150953450" style="width:50%;" />
+    <img src="./assets/image-20240303151005993.png" alt="image-20240303151005993" style="width:50%;" />
+    <img src="./assets/image-20240303151058706.png" alt="image-20240303151058706" style="width:100%;" />
+</div>
 
-![image-20240229181123990](./assets/image-20240229181123990.png)
+```sql
+SELECT order_dt, order_item, COUNT(*) 
+FROM starbucks_order
+GROUP BY order_dt, order_item
+ORDER BY order_dt;
 
-![image-20240229181138612](./assets/image-20240229181138612.png)
+SELECT order_dt, order_item, COUNT(*) 
+FROM starbucks_order
+GROUP BY GROUPING SETS (order_dt, order_item)
+ORDER BY order_dt;
+```
+
+<div style="display:flex">
+    <img src="./assets/image-20240303232310858.png" alt="image-20240303232310858" style="width:50%;" />
+    <img src="./assets/image-20240303232323646.png" alt="image-20240303232323646" style="width:50%;" />
+</div>
+
+```sql
+SELECT order_dt, order_item, COUNT(*) 
+FROM starbucks_order
+GROUP BY GROUPING SETS (order_dt, order_item, ROLLUP(reg_name))
+ORDER BY order_dt;
+
+SELECT order_dt, order_item, COUNT(*) 
+FROM starbucks_order
+GROUP BY GROUPING SETS (order_dt, ROLLUP(order_item, reg_name))
+ORDER BY order_dt;
+```
+
+<div style="display:flex">
+    <img src="./assets/image-20240303232736861.png" alt="image-20240303232736861" style="width:50%;" />
+    <img src="./assets/image-20240303232826249.png" alt="image-20240303232826249" style="width:50%;" />
+</div>
+
+```sql
+#날짜별 주문 아이템별 그룹핑 && 판매자별 그룹핑 && 총합계
+SELECT order_dt, order_item, reg_name,COUNT(*)
+FROM starbucks_order
+GROUP BY GROUPING SETS (ROLLUP(order_dt, order_item), reg_name)
+ORDER BY order_dt, order_item, reg_name;
+```
+
+<img src="./assets/image-20240303233452119.png" alt="image-20240303233452119" style="width:100%;" />
+
+> 🤔ROLLUP 함수는 인수 순서가 중요한데, 
+>
+> CUBE와 GROUPING SETS 함수는 인수 순서 마음대로 해도 된다.
+
+![image-20240303233759633](./assets/image-20240303233759633.png)
 
 
+
+![image-20240303233816861](./assets/image-20240303233816861.png)
+
+![image-20240303233836166](./assets/image-20240303233836166.png)
+
+![image-20240303233851613](./assets/image-20240303233851613.png)
+
+### GROUPING
+
+* ROLLUP, CUBE, GROUPING SETS 등과 함께 사용됨
+* 소계를 나타내는 ROW에 1을 넣어 다른 row들과 구분할 수 있게 해준다.
+
+```sql
+# 결과 데이터에서 소계가 계산된 ROW에서는 GROUPING 함수의 결과값이 1, 나머지 ROw에서는 0
+SELECT order_dt, GROUPING(order_dt), COUNT(*) 
+FROM starbucks_order
+GROUP BY ROLLUP(order_dt)
+ORDER BY order_dt;
+
+#결과 값을 가지고 원하는 텍스트 출력
+#sol1
+SELECT CASE GROUPING(order_dt) WHEN 1 THEN 'TOTAL' ELSE order_dt END AS order_dt, COUNT(*)
+FROM starbucks_order
+GROUP BY ROLLUP(order_dt)
+ORDER BY order_dt;
+#sol2
+SELECT DECODE(GROUPING(order_dt), 1, 'TOTAL', order_dt) AS order_dt, COUNT(*)
+FROM starbucks_order
+GROUP BY ROLLUP(order_dt)
+ORDER BY order_dt;
+```
+
+<div style="display:flex">
+    <img src="./assets/image-20240304001044379.png" alt="image-20240304001044379" style="width:50%;" />
+    <img src="./assets/image-20240304001055765.png" alt="image-20240304001055765" style="width:50%;" />
+</div>
+
+```sql
+SELECT order_dt, GROUPING(order_dt), order_item, GROUPING(order_item), COUNT(*)
+FROM starbucks_order
+GROUP BY ROLLUP (order_dt, order_item)
+ORDER BY order_dt;
+
+SELECT 
+CASE GROUPING(order_dt) WHEN 1 them 'ALL DATES' ELSE order_dt END AS order_dt,
+CASE GROUPING(order_item) WHEN 1 THEN 'ALL ITEMS' ELSE order_item END AS order_item,
+COUNT(*)
+FROM stsarbucks_order
+GROUP BY ROLLUP(order_dt, order_item)
+ORDER BY order_dt;
+```
+
+<div style="display:flex">
+    <img src="./assets/image-20240304001754316.png" alt="image-20240304001754316" style="width:50%;" />
+    <img src="./assets/image-20240304001830169.png" alt="image-20240304001830169" style="width:50%;" />
+</div>
+
+![image-20240304001920857](./assets/image-20240304001920857.png)
+
+![image-20240304001929974](./assets/image-20240304001929974.png)
 
 ## 5. 윈도우 함수
 
-![image-20240229181149963](./assets/image-20240229181149963.png)
+* 행과 행 간의 관계를 정의하는 함수
 
-![image-20240229181201896](./assets/image-20240229181201896.png)
+* OVER 키워드와 함께 사용
 
-![image-20240229181211040](./assets/image-20240229181211040.png)
+* 역할에 따라 다음과 같이 분류됨
 
-![image-20240229181220710](./assets/image-20240229181220710.png)
+  <table>
+      <tr>
+          <td>순위 함수</td>
+          <td>RANK, DENSES_RANK, ROW_NUMBER</td>
+      </tr>
+        <tr>
+          <td>집계 함수</td>
+          <td>SUM, MAX, MIN, AVG, COUNT</td>
+      </tr>
+        <tr>
+          <td>행 순서 함수</td>
+          <td>FIRST_VALUE, LAST_VALUE, LAG, LEAD</td>
+      </tr>
+        <tr>
+          <td>비율 함수</td>
+          <td>CUME_DIST, PERCENT_RANK, NTILE, RATIO_TO_REPORT</td>
+      </tr>
+  </table>
 
-![image-20240229181230424](./assets/image-20240229181230424.png)
+  > ### **OVER**(행 집합을 정의하는 기준)
+  >
+  > * 각 행별로 
+  > * 특정 기준에 따라 필요한 집합을 구해
+  > * 함수를 적용하고 싶을 때 쓰는 구문
+  >   * 인자로 `ORDER_BY`나 `PARTITION BY` 사용할 수 있다.
+  >
+  > <창고 테이블>
+  >
+  > <table>
+  >     <tr>
+  >         <td>칼럼명</td>
+  >         <td>데이터 타입</td>
+  >     </tr>
+  >     <tr>
+  >         <td>번호(PK)</td>
+  >         <td>LONG</td>
+  >     </tr>
+  >     <tr>
+  >         <td>날짜</td>
+  >         <td>DATE</td>
+  >     </tr>
+  >     <tr>
+  >         <td>수량</td>
+  >         <td>INT</td>
+  >     </tr>
+  > </table>
+  >
+  > <img src="./assets/image-20240304194855531.png" alt="image-20240304194855531" style="width:100%;" />
+  >
+  > 🤔각 날짜별로 창고의 재고가 궁금해
+  >
+  > ```sql
+  > #날짜로 정렬한 후 자기 자신과 상위에 위치한 행들을 집합에 포함
+  > SELECT 번호, 날짜, 수량, SUM(수량) OVER(ORDER BY 날짜) AS 재고
+  > FROM 창고
+  > ```
+  >
+  > <img src="./assets/image-20240304194947204.png" alt="image-20240304194947204" style="width:100%;" />
+  >
+  > 😎1번 행은 10/1 까지의 합 `sum(1)`, 2번 행은 10/2 까지의 합 `sum(1,2)`, 3번 행은 10/3 까지의 합`sum(1,2,3)`
+  >
+  > <span style="color:#9195F6">각 행별로 SUM함수에 사용된 레코드의 집합이 다 다르다.</span>
+  >
+  > 🤷‍♀️GROUP BY vs OVER
+  >
+  > * GROUP BY는 결과 행 개수에 영향을 주지만 OVER는 안준다.
+  >
+  > ### **PARTITION BY**
+  >
+  > * 어떤 칼럼의 값을 기준으로 행 집합을 나눌지 정의
+  >
+  > <div style="display:flex">
+  >     <img src="./assets/image-20240304201301567.png" alt="image-20240304201301567" style="width:50%;" />
+  >     <img src="./assets/image-20240304201343613.png" alt="image-20240304201343613" style="width:50%;" />
+  > </div>
+  >
+  > 🤔물품 A,B 각각에 대해 날짜별로 누적 합을 구하고 싶다
+  >
+  > ```sql
+  > SELECT 번호, 날짜, 수량, SUM(수량) OVER(PARTITION BY 물품 ORDER BY 날짜) AS 재고
+  > FROM 창고
+  > ORDER BY 날짜;
+  > ```
+  >
+  > <img src="./assets/image-20240304201657016.png" alt="image-20240304201657016" style="width:100%;" />
+  >
+  > 
+  >
+  > 
 
-![image-20240229181241301](./assets/image-20240229181241301.png)
+### 순위 함수
 
-![image-20240229181252220](./assets/image-20240229181252220.png)
+<table>
+    <tr>
+        <td>RANK</td>
+        <td>1,2,2,4,5,5,7...</td>
+    </tr>
+     <tr>
+        <td>DENSE_RANK</td>
+        <td>1,2,2,3,4,4,5...</td>
+    </tr>
+     <tr>
+        <td>ROW_NUMBER</td>
+        <td>1,2,3,4,5,6,7</td>
+    </tr>
+</table>
 
-![image-20240229181302900](./assets/image-20240229181302900.png)
+#### RANK
 
-![image-20240229181314588](./assets/image-20240229181314588.png)
+* 순위를 매기면서 같은 순위가 존재하면 존재하는 수 만큼 다음 순위를 건너뛴다.
 
-![image-20240229181325264](./assets/image-20240229181325264.png)
+  ```sql
+  SELECT order_dt, count(*), RANK () OVER (ORDER BY COUNT(*) DESC ) AS RANK 
+  FROM starbucks_order
+  GROUP BY order_dt;
+  ```
 
-![image-20240229181334721](./assets/image-20240229181334721.png)
+  <img src="./assets/image-20240304122511474.png" alt="image-20240304122511474" style="width:100%;" />
 
-![image-20240229181343244](./assets/image-20240229181343244.png)
+  ```sql
+  #부서별로 급여가 높은 사원들부터 랭킹
+  SELECT first_name, last_name, department_id, salary,
+  RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS RANK 
+  FROM employees;
+  ```
 
-![image-20240229181354869](./assets/image-20240229181354869.png)
+  <img src="./assets/image-20240304152020784.png" alt="image-20240304152020784" style="width:100%;" />
 
-![image-20240229181406456](./assets/image-20240229181406456.png)
+#### DENSE_RANK
 
-![image-20240229181418103](./assets/image-20240229181418103.png)
+* 순위를 매기면서 같은 순위존재하더라도 다음 순위를 건너뛰지 않고 이어서 매긴다.
+
+  ```sql
+  # 날짜별로 주문건수를 카운트해 순위를 매긴 것
+  SELECT order_dt, COUNT(*), DENSE_RANK() OVER(ORDER BY COUNT(*) DESC ) AS DENSE_RANK
+  FROM starbucks_order
+  GROUP BY order_dt;
+  ```
+
+  <img src="./assets/image-20240304122750606.png" alt="image-20240304122750606" style="width:100%;" />
+
+  ```sql
+  SELECT first_name, last_name, department_id, salary, DENSE_RANK() OVER(PARTITION BY department_id ORDER BY salary DESC) AS DENSE_RANK 
+  FROM employees;
+  ```
+
+  <img src="./assets/image-20240304155058627.png" alt="image-20240304155058627" style="width:100%;" />
+
+#### ROW_NUMBER
+
+* 순위를 매기면서 동일한 값이라도 각기 다른 순위를 부여
+
+  ```sql
+  SELECT order_dt, COUNT(*), ROW_NUMBER () OVER(ORDER BY count(*) DESC ) AS ROW_NUMBER 
+  FROM starbucks_order
+  GROUP BY order_dt;
+  ```
+
+  <img src="./assets/image-20240304155334999.png" alt="image-20240304155334999" style="width:100%;" />
+
+  ```sql
+  SELECT first_name, last_name, department_id, salary,
+  ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS ROW_NUMBER
+  FROM employees;
+  ```
+
+  <img src="./assets/image-20240304155645641.png" alt="image-20240304155645641" style="width:100%;" />
+
+![image-20240304155707543](./assets/image-20240304155707543.png)
+
+![image-20240304155720339](./assets/image-20240304155720339.png)
+
+![image-20240304155739632](./assets/image-20240304155739632.png)
+
+![image-20240304155750954](./assets/image-20240304155750954.png)
+
+![image-20240304155804424](./assets/image-20240304155804424.png)
+
+### 집계 함수
+
+#### SUM
+
+* 데이터의 합계를 구하는 함수
+
+* 인자 값으로는 숫자형만 올 수 있다.
+
+  ```sql
+  SELECT * FROM sqld;
+  
+  SELECT SUM(score) AS total_score FROM sqld;
+  
+  #개인별 총 점수
+  SELECT student_name, subject, score, SUM(score) OVER(PARTITION BY student_name) AS total_score 
+  FROM sqld;
+  
+  #order by 로 데이터 누적값 구할 수 있다.
+  SELECT student_name, subject, score,
+  SUM(score) OVER(PARTITION BY student_name ORDER BY subject DESC RANGE UNBOUNDED PRECEDING) AS total_score
+  FROM sqld
+  
+  #sum하는 칼럼을 over 절에서 order by 절에 명시해주게 되면 range unbounded preceding 구문 없어도 누적합 집계
+  SELECT student_name, subject, score, SUM(score) OVER(ORDER BY score DESC) AS sum_score
+  FROM sqld
+  WHERE subject='SQL 기본 및 활용';
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240304160456309.png" alt="image-20240304160456309" style="width:50%;" />
+  	<img src="./assets/image-20240304160809927.png" alt="image-20240304160809927" style="width:50%;" />
+      <img src="./assets/image-20240304160830405.png" alt="image-20240304160830405" style="width:50%;" />
+      <img src="./assets/image-20240304161343311.png" alt="image-20240304161343311" style="width:50%;" />
+      <img src="./assets/image-20240304192322562.png" alt="image-20240304192322562" style="width:100%;" />
+  </div>
+
+![image-20240304192349647](./assets/image-20240304192349647.png)
+
+![image-20240304192401113](./assets/image-20240304192401113.png)
+
+#### MAX
+
+* 데이터의 최댓값을 구하는 함수
+
+```sql
+SELECT * FROM sqld;
+
+SELECT MAX(score) AS max_scorel FROM sqld;
+
+SELECT student_name, subject, score, MAX(score) OVER(PARTITION BY subject) AS max_score
+FROM sqld;
+
+SELECT student_name, subject, score
+FROM (SELECT student_name, subject, score, MAX(score) OVER(PARTITION BY subject) AS max_score FROM sqld)
+WHERE score=max_score;
+```
+
+<div style="display:flex;flex-wrap:wrap">
+    <img src="./assets/image-20240304222455063.png" alt="image-20240304222455063" style="width:50%;" />
+    <img src="./assets/image-20240304222507695.png" alt="image-20240304222507695" style="width:50%;" />
+    <img src="./assets/image-20240304222635208.png" alt="image-20240304222635208" style="width:50%;" />
+    <img src="./assets/image-20240304222649184.png" alt="image-20240304222649184" style="width:50%;" />
+</div>
+
+![image-20240304222721333](./assets/image-20240304222721333.png)
+
+![image-20240304222734408](./assets/image-20240304222734408.png)
+
+####  MIN
+
+* 데이터의 최솟값을 구하는 함수
+
+  ```sql
+  SELECT * FROM sqld;
+  SELECT MIN(score) AS min_score FROM sqld;
+  SELECT student_name, subject, score, MIN(score) OVER(PARTITION BY subject) AS min_score
+  FROM sqld;
+  SELECT student_name, subject, score
+  FROM (SELECT student_name, subject, score, MIN(score) OVER(PARTITION BY subject) AS min_score FROM sqld)
+  WHERE score=min_score;
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240304223207915.png" alt="image-20240304223207915" style="widthL50%;" />
+      <img src="./assets/image-20240304223223765.png" alt="image-20240304223223765" style="width:50%;" />
+      <img src="./assets/image-20240304223235104.png" alt="image-20240304223235104" style="width:50%;" />
+      <img src="./assets/image-20240304223248601.png" alt="image-20240304223248601" style="width:50%;" /></div>
+
+![image-20240304223336964](./assets/image-20240304223336964.png)
+
+![image-20240304223355334](./assets/image-20240304223355334.png)
+
+#### AVG
+
+* 데이터의 평균값
+
+  ```sql
+  SELECT * FROM sqld;
+  
+  SELECT AVG(score) AS avg_score FROM sqld;
+  
+  SELECT student_name, subject, score, ROUND(AVG(score) OVER(PARTITION BY subject)) AS avg_score 
+  FROM sqld;
+  
+  SELECT student_name, subject, score FROM (SELECT student_name, subject, score, ROUND(AVG(score) OVER(PARTITION BY subject)) AS avg_score FROM sqld)
+  WHERE score>= avg_score;
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240304224052831.png" alt="image-20240304224052831" style="width:50%;" />
+      <img src="./assets/image-20240304224103062.png" alt="image-20240229181314588" style="width:50%;" />
+      <img src="./assets/image-20240304224140981.png" alt="image-20240304224140981" style="width:50%;" />
+      <img src="./assets/image-20240304224159615.png" alt="image-20240304224159615" style="width:50%;" /></div>
+
+> 📗윈도우 함수 사용 옵션
+>
+> * 집계 하려는 데이터의 범위를 지정
+>
+> <img src="./assets/image-20240304224511861.png" alt="image-20240304224511861" style="width:50%;" />
+>
+> <img src="./assets/image-20240304224546198.png" alt="image-20240304224546198" style="width:50%;" />
+>
+> <Ex>
+>
+> **RANGE** **BETWEEN** **UNBOUNDED** **PRECEDING** **AND** **CURRENT** **ROW** 
+>
+> * 처음부터 현재 행 까지
+> * **RANGE** **UNBOUNDED** **PRECEDING** 와 같음
+>
+> **RANGE** **BETWEEN** 10 **PRECEDING** **AND** **CURRENT** **ROW** 
+>
+> * 현재 행이 가지고 있는 값보다 값의 차이가 10이하인 행부터 현재 행 까지
+> * **RANGE** 10 **PRECEDING** 과 같음
+>
+> **ROWS** **BETWEEN** **CURRENT** **ROW** **AND** **UNBOUNDED** **FOLLOWING** 
+>
+> * 현재 행부터 끝까지
+>
+> **ROWS** **BETWEEN** **CURRENT** **ROW** **AND** 5 **FOLLOWING**
+>
+> * 현재 행부터 아래로 5만큼 이동한 행 까지
+
+#### COUNT
+
+* 데이터의 건수를 구하는 함수
+
+  ```sql
+  SELECT * FROM sqld;
+  
+  SELECT COUNT(*) AS score_count FROM sqld;
+  
+  SELECT student_name, subject, score, COUNT(*) OVER(PARTITION BY subject) AS pass_count
+  FROM sqld
+  WHERE RESULT='PASS';
+  
+  SELECT student_name, subject, score, COUNT(*) OVER(PARTITION BY subject ORDER BY score DESC RANGE UNBOUNDED PRECEDING) AS higher_count
+  FROM sqld;
+  
+  SELECT student_name, subject, score, COUNT(*) OVER(PARTITION BY subject ORDER BY score DESC RANGE BETWEEN 5 PRECEDING AND 5 FOLLOWING) AS similar_count
+  FROM sqld;
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240304225718858.png" alt="image-20240304225718858" style="width:50%;" />
+    <img src="./assets/image-20240304225730776.png" alt="image-20240304225730776" style="width:50%;" />
+  <img src="./assets/image-20240304225749948.png" alt="image-20240304225749948" style="width:50%;" />
+  <img src="./assets/image-20240304225800989.png" alt="image-20240304225800989" style="width:50%;" />
+  <img src="./assets/image-20240304225812591.png" alt="image-20240304225812591" style="width:50%;" />
+  </div>
+
+![image-20240304225833362](./assets/image-20240304225833362.png)
+
+![image-20240304225841620](./assets/image-20240304225841620.png)
+
+### 행 순서 함수
+
+#### FIRST_VALUE
+
+* 파티션 별 가장 선두에 위치한 데이터를 구하는 함수
+
+```sql
+SELECT * FROM sqld;
+
+SELECT student_name, subject, score, FIRST_VALUE(score) OVER(ORDER BY score) AS first_value FROM sqld;
+
+SELECT student_name, subject, score, FIRST_VALUE(score) OVER(PARTIAL BY subject ORDER BY score DESC) AS first_value FROM sqld;
+```
+
+<div style="display:flex;flex-wrap:wrap">
+    <img src="./assets/image-20240304232735943.png" alt="image-20240304232735943" style="width:50%;" />
+    <img src="./assets/image-20240304232752024.png" alt="image-20240304232752024" style="width:50%;" />
+    <img src="./assets/image-20240304232804514.png" alt="image-20240304232804514" style="width:50%;" />
+</div>
+
+![image-20240304232928466](./assets/image-20240304232928466.png)
+
+![image-20240304232937433](./assets/image-20240304232937433.png)
+
+![image-20240304232953882](./assets/image-20240304232953882.png)
+
+#### LAST_VALUE
+
+* 파티션 가장 끝에 위치한 데이터를 구하는 함수
+
+  ```sql
+  SELECT * FROM sqld;
+  
+  #오름차순으로 정렬한 후 마지막 점수는 모두 77이 출력되어야 할 것 같은데 실제로는 row의 score값과 동일한 값이 출력된다?
+  #windowing절의 default가 range unbounded preceding이라 파티션의 범위가 맨 위 끝 행부터 현재 행까지로 지정되서 그렇다
+  SELECT student_name, subject, score, LAST_VALUE(score) OVER(ORDER BY score) AS last_value FROM sqld;
+  #파티션 범위가 맨 마지막 끝행까지로수정!
+  SELECT student_name, subject, score, LAST_VALUE(score) OVER(ORDER BY score RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_value FROM sqld;
+  #이제 과목별 가장 높은 점수 구하기
+  SELECT student_name, subject, score, LAST_VALUE(score) OVER(PARTITION BY subject ORDER BY score RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_value FROM sqld;
+  
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+  <img src="./assets/image-20240305000045575.png" alt="image-20240305000045575" style="width:50%;" />
+  <img src="./assets/image-20240305000057680.png" alt="image-20240305000057680" style="width:50%;" />
+  <img src="./assets/image-20240305000109649.png" alt="image-20240305000109649" style="width:50%;" />
+      <img src="./assets/image-20240305005527521.png" alt="image-20240305005527521" style="width:50%;" />
+  </div>
+
+![image-20240305005623596](./assets/image-20240305005623596.png)
+
+![image-20240305005634559](./assets/image-20240305005634559.png)
+
+#### LAG
+
+* 
 
 ![image-20240229181425631](./assets/image-20240229181425631.png)
 
