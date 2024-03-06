@@ -3356,11 +3356,67 @@ SELECT student_name, subject, score, FIRST_VALUE(score) OVER(PARTIAL BY subject 
 
 #### LAG
 
-* 
+* 파티션 별로 특정 수만큼 앞선 데이터를 구하는 함수
 
-![image-20240229181425631](./assets/image-20240229181425631.png)
+  ```sql
+  SELECT * FROM sqld;
+  
+  SELECT student_name, subject, score, LAG(score, 3) OVER (ORDER BY score) AS LAG
+  FROM sqld;
+  
+  #LEAD()의 두번째 인자 default 는 1
+  SELECT student_name, subject, score, LAG(score) OVER (ORDER BY score) AS LAG
+  FROM sqld;
+  SELECT student_name, subject, score, LAG(score, 2) OVER (PARTITION BY subject ORDER BY score DESC) AS LAG
+  FROM sqld;
+  ```
 
-![image-20240229181435748](./assets/image-20240229181435748.png)
+  <div style="display:flex;flex-wrap:wrap">
+    <img src="./assets/image-20240306153318599.png" alt="image-20240306153318599" style="width:50%;" />
+    <img src="./assets/image-20240306153355632.png" alt="image-20240306153355632" 
+         style="width:50%;" />
+    <img src="./assets/image-20240306153411731.png" alt="image-20240306153411731" style="width:50%;" />
+    <img src="./assets/image-20240306153436619.png" alt="image-20240306153436619" style="width:50%;" />
+  </div>
+
+![image-20240306153612682](./assets/image-20240306153612682.png)
+
+#### LEAD
+
+* 파티션 별 특정 수 만큼 뒤에 있는 데이터를 구하는 함수
+
+  ```sql
+  SELECT * FROM sqld;
+  SELECT student_name, subject, score, LEAD(score, 3) OVER (ORDER BY score) AS LEAD
+  FROM sqld;
+  SELECT student_name, subject, score, LEAD(score) OVER (ORDER BY score) AS LEAD
+  FROM sqld;
+  SELECT student_name, subject, score, LEAD(score, 2) OVER (PARTITION BY subject ORDER BY score DESC) AS LEAD
+  FROM sqld;
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+    <img src="./assets/image-20240306154010637.png" alt="image-20240306154010637" style="zoom:50%;" />
+    <img src="./assets/image-20240306154023350.png" alt="image-20240306154023350" style="zoom:50%;" />
+    <img src="./assets/image-20240306154045717.png" alt="image-20240306154045717" style="zoom:50%;" />
+    <img src="./assets/image-20240306154155505.png" alt="image-20240306154155505" style="zoom:50%;" /></div>
+
+![image-20240306154401721](./assets/image-20240306154401721.png)
+
+![image-20240306154415274](./assets/image-20240306154415274.png)
+
+![image-20240306154432460](./assets/image-20240306154432460.png)
+
+### 비용 함수
+
+### RATIO_TO_REPORT
+
+* 파티션 별 합계에서 차지하는 비율을 구하는 함수
+
+  ```sql
+  ```
+
+  
 
 ![image-20240229181443606](./assets/image-20240229181443606.png)
 
