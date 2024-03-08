@@ -2412,6 +2412,7 @@ IN (SELECT job_id, max_salary FROM jobs WHERE max_salary=10000);
 
 * query1의 결과와 query2의 결과를 그대로 합하는 것.
 * 중복된 행도 그대로 출력
+* 칼럼 이름은 다를 지언정 데이터 타입은 같아야 함.
 
 <img src="./assets/image-20240303003246501.png" alt="image-20240303003246501" style="width:50%;" />
 
@@ -2572,8 +2573,6 @@ SELECT order_dt, order_item, reg_name, count(*)
 FROM starbucks_order
 GROUP BY ROLLUP (order_dt, order_item, reg_name)
 GROUP BY order_dt;
-
-
 ```
 
 <div style="display:flex">
@@ -3414,29 +3413,137 @@ SELECT student_name, subject, score, FIRST_VALUE(score) OVER(PARTIAL BY subject 
 * 파티션 별 합계에서 차지하는 비율을 구하는 함수
 
   ```sql
+  SELECT * FROM sqld;
+  
+  SELECT student_name, subject, score, SUM(score) OVER() AS sum,
+  score/SUM(score) OVER() AS "score/sum",
+  RATIO_TO_REPORT(score) OVER() AS ratio_to_report
+  FROM sqld;
+  
+  SELECT student_name,subject, score, SUM(score) OVER (PARTITION BY subject) AS sum,
+  score/SUM(score) OVER (PARTITION BY subject) AS "score/sum" ,
+  RATIO_TO_REPORT(score) OVER(PARTITION BY subject) AS ratio_to_report
+  FROM sqld;
+  ```
+  
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240306192747201.png" alt="image-20240306192747201" style="width:50%;" />
+      <img src="./assets/image-20240306192802625.png" alt="image-20240306192802625" style="width:50%;" />
+      <img src="./assets/image-20240306192841880.png" alt="image-20240306192841880" style="width:50%;" />
+  </div>
+  
+  ![image-20240306193435303](./assets/image-20240306193435303.png)
+
+#### PERCENT_RANK
+
+* 해당 파티션의 맨 위 끝 행을 0, 맨 아래 끝 행을 1로 놓고 현재 행이 위치하는 백분위 순위 값을 구하는 함수
+
+  ```sql
+  SELECT * FROM sqld;
+  
+  SELECT student_name, subject, score, RANK() OVER (ORDER BY score) AS RANK,COUNT(*) OVER() AS count.
+  (RANK() OVER(ORDER BY score) - 1) / (COUNT(*) OVER() - 1) AS "(rank-1)/(count-1)",
+  PERCENT_RANK() OVER(ORDER BY score) AS percent_rank 
+  FROM sqld;
+  
+  SELECT student_name,subject, score, RANK() OVER(PARTITION BY subject ORDER BY score) AS RANK,
+  count(*) OVER (PARTITION BY subject) AS count,
+  (RANK() OVER (PARTITION BY subject ORDER BY score) -1 ) / (COUNT(*) OVER (PARTITION BY subject) - 1) AS "(rank-1)/(count-1)",
+  PERCENT_RANK() OVER (PARTITION BY subject ORDER BY subject ORDER BY score) AS PERCENT_RANK
+  FROM sqld;
   ```
 
-  
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240306195833259.png" alt="image-20240306195833259" style="width:50%;" />
+      <img src="./assets/image-20240306195845748.png" alt="image-20240306195845748" style="width:50%;" />
+      <img src="./assets/image-20240306195900869.png" alt="image-20240306195900869" style="width:50%;" />
+  </div>
 
-![image-20240229181443606](./assets/image-20240229181443606.png)
+![image-20240306200004215](./assets/image-20240306200004215.png)
 
-![image-20240229181453298](./assets/image-20240229181453298.png)
+#### CUME_DIST
 
-![image-20240229181501171](./assets/image-20240229181501171.png)
+* 해당 파티션의 맨 위 끝 행을 0, 맨 아래 끝 행을 1로 놓고 현재 행이 위치하는 백분위 순위 값을 구하는 함수
 
-![image-20240229181509814](./assets/image-20240229181509814.png)
+  ```sql
+  SELECT * FROM sqld;
+  SELECT student_name, subject, score, 
+  COUNT(*) OVER (ORDER BY score) AS count,
+  COUNT(*) OVER () AS total_count,
+  COUNT(*) OVER (ORDER BY score) / COUNT(*) OVER() AS "count/total_count",
+  CUME_DIST() OVER (ORDER BY score) AS cume_dist
+  FROM sqld;
+  SELECT student_name, subject, score, 
+  COUNT(*) OVER (PARTITION BY subject ORDER BY score) AS count,
+  COUNT(*) OVER (PARTIAL BY subject) AS total_count,
+  COUNT(*) OVER (PARTITION BY subject ORDER BY score) / COUNT(*) OVER(PARTITION BY subject) AS "count/total_count",
+  CUME_DIST() OVER (PARTITION BY subject ORDER BY score) AS cume_dist
+  FROM sqld;
+  ```
 
-![image-20240229181519291](./assets/image-20240229181519291.png)
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240306201146642.png" alt="image-20240306201146642" style="width:50%;" />
+      <img src="./assets/image-20240306201159171.png" alt="image-20240306201159171" style="width:50%;" />
+      <img src="./assets/image-20240306201213245.png" alt="image-20240306201213245" style="width:50%;" />
+  </div>
 
-![image-20240229181527624](./assets/image-20240229181527624.png)
+![image-20240229181519291](./assets/image-20240306201232479.png)
 
 
 
 ## 6. Top-N 쿼리
 
-![image-20240229181539290](./assets/image-20240229181539290.png)
+* N위 까지 추출하겠다!
 
-![image-20240229181547703](./assets/image-20240229181547703.png)
+### ROWNUM
+
+* Pseudo(가짜) Column
+
+* 행이 반환 될 때 마다 순번이 1씩 증가
+
+  * WHERE ROWNUM=5 같은 건너뛰기 조건은 성립될 수 없다.
+    * WHERE ROWNUM=1 은 되더라
+  * 항상 `< ` 또는 `<=` 조건으로 사용해야 한다.
+
+  ```sql
+  SELECT ROWNUM, 이름, 국어, 영어, 수학 FROM EXAM_SCORE;
+  
+  SELECT ROWNUM, 이름, 국어, 영어, 수학 FROM EXAM_SCORE WHERE ROWNUM=5;
+  
+  SELECT ROWNUM, 이름, 국어, 영어, 수학 FROM EXAM_SCORE WHERE ROWNUM<=5;
+  
+  SELECT ROWNUM, 이름, 국어, 영어, 수학 FROM (SELECT 이름, 국어, 영어, 수학 FROM EXAM_SCORE ORDER BY 국어 DESC, 영어 DESC, 수학 DESC) WHERE ROWNUM=5;
+  
+  SELECT ROWNUM, 이름, 국어, 영어, 수학 FROM exam_score WHERE ROWNUM <= 5 ORDER BY 국어 DESC, 영어 DESC, 수학 DESC;
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240306230322201.png" alt="image-20240306230322201" style="width:50%;" />
+      <img src="./assets/image-20240306230338243.png" alt="image-20240306230338243" style="width:50%;" />
+      <img src="./assets/image-20240306230726458.png" alt="image-20240306230726458" style="width:50%;" />
+      <img src="./assets/image-20240306230740421.png" alt="image-20240306230740421" style="width:50%;" />
+      <img src="./assets/image-20240306230754463.png" alt="image-20240306230754463" style="width:50%;" />
+  </div>
+
+### 윈도우 함수의 순위 함수
+
+* ```sql
+  SELECT * FROM (
+  SELECT ROW_NUMBER () OVER (ORDER BY 국어 DESC, 영어 DESC , 수학 DESC) AS rnum,이름, 국어, 영어, 수학 FROM exam_score)
+  WHERE rnum <= 5;
+  SELECT * FROM (
+  SELECT RANK() OVER (ORDER BY 국어 DESC, 영어 DESC , 수학 DESC) AS rank,이름, 국어, 영어, 수학 FROM exam_score)
+  WHERE rnum <= 5;
+  SELECT * FROM (
+  SELECT DENSE_RANK() OVER (ORDER BY 국어 DESC, 영어 DESC , 수학 DESC) AS dr,이름, 국어, 영어, 수학 FROM exam_score)
+  WHERE rnum <= 5;
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240306232414784.png" alt="image-20240306232414784" style="width:50%;" />
+      <img src="./assets/image-20240306232425730.png" alt="image-20240306232425730" style="width:50%;" />
+      <img src="./assets/image-20240306232440707.png" alt="image-20240306232440707" style="width:50%;" />
+  </div>
 
 ![image-20240229181604187](./assets/image-20240229181604187.png)
 
@@ -3446,9 +3553,29 @@ SELECT student_name, subject, score, FIRST_VALUE(score) OVER(PARTIAL BY subject 
 
 ## 7. Self Join
 
-![image-20240229181618908](./assets/image-20240229181618908.png)
+* 나 자신과의 조인
 
-![image-20240229181629514](./assets/image-20240229181629514.png)
+* FROM 절에 같은 테이블이 두 번 이상 등장 → ALIAS를 반드시 표기
+
+  Ex. 쇼핑몰에서 상품이 속한 카테고리는 다음과 같은 구조를 가지고 있다.
+
+  <img src="./assets/image-20240307120512826.png" alt="image-20240307120512826" style="width:100%;" />
+
+  ```sql
+  SELECT * FROM category;
+  
+  SELECT a.category_type, a.category_name, b.category_type, b.category_name FROM category a, category b
+  WHERE a.category_name=b.parent_category AND a.category_type='대';
+  
+  SELECT a.category_type, a.category_name, b.category_type, b.category_name, c.category_type, c.category_name  FROM category a, category b, category c
+  WHERE a.category_name=b.parent_category AND b.category_name=c.parent_category;
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240307122047720.png" alt="image-20240307122047720" style="width:50%;" />
+      <img src="./assets/image-20240307122106267.png" alt="image-20240307122106267" style="width:50%;" />
+      <img src="./assets/image-20240307122134877.png" alt="image-20240307122134877" style="width:100%;" />
+  </div>
 
 ![image-20240229181701993](./assets/image-20240229181701993.png)
 
@@ -3458,15 +3585,127 @@ SELECT student_name, subject, score, FIRST_VALUE(score) OVER(PARTIAL BY subject 
 
 ## 8. 계층 쿼리
 
-![image-20240229181713322](./assets/image-20240229181713322.png)
+* 테이블에 계층 구조를 이루는 칼럼이 존재할 경우 계층 쿼리를 이용해서 데이터를 출력할 수 있다.
 
+  * 위에서 셀프 조인한 쿼리는 계층 쿼리로 바꾸면~?
 
+  ```sql
+  SELECT LEVEL, SYS_CONNECT_BY_PATH('['||category_type||']'|| category_name, '-') AS PATH
+  FROM category
+  START WITH parent_category IS NULL
+  CONNECT BY PRIOR category_name=parent_category;
+  ```
 
-![image-20240229181721403](./assets/image-20240229181721403.png)
+  <img src="./assets/image-20240307124420344.png" alt="image-20240307124420344" style="width:100%;" />
 
-![image-20240229181733597](./assets/image-20240229181733597.png)
+  * LEVEL
+    * 현재의 DEPTH를 반환. 
+    * root node는 1이 된다.
+  * SYS_CONNECT_BY_PATH(칼럼, 구분자)
+    * root node부터 현재 node까지 경로를 출력해주는 함수
+  * START_WITH
+    * 경로가 시작되는 루트 노드를 생성해주는 절
+  * CONNECT BY
+    * 루트 노드로부터 자식 노드를 생성해주는 절
+    * 조건에 만족하는 데이터가 없을 때 까지 노드를 생성
+  * PRIOR
+    * 바로 앞에 있는 부모 노드의 값을 반환
 
-![image-20240229181743021](./assets/image-20240229181743021.png)
+  > 😎단계별로 보자
+
+  ```sql
+  START WITH parent_category IS NULL #1
+  ```
+
+  <img src="./assets/image-20240307131510733.png" alt="image-20240307131510733" style="width:100%;" />
+
+  ```sql
+  SELECT * FROM category START WITH parent_category IS NULL CONNECT BY PRIOR category_name=parent_category;
+  ```
+
+  1. 컴퓨터/디지털/가전 → parent_category
+     <img src="./assets/image-20240307132045148.png" alt="image-20240307132045148" style="width:100%;" />
+
+  2. 가전 →parent_category
+     <img src="./assets/image-20240307132116368.png" alt="image-20240307132116368" style="width:100%;" />
+
+     디지털→parent_category
+
+     <img src="./assets/image-20240307132137775.png" alt="image-20240307132137775" style="width:100%;" />컴퓨터→parent_category
+     <img src="./assets/image-20240307132200285.png" alt="image-20240307132200285" style="width:100%;" />
+
+  ```sql
+  SELECT LEVEL, category_type AS TYPE, category_name AS name, parent_category AS parent, SYS_CONNECT_BY_PATH('['||category_type||']'|| category_name, '-') AS PATH
+  FROM category
+  START WITH parent_category IS NULL
+  CONNECT BY PRIOR category_name=parent_category;
+  ```
+
+  <img src="./assets/image-20240307132517058.png" alt="image-20240307132517058" style="width:100%;" />
+
+> 😎그 밖에 계층 쿼리에서 사용할 수 있는 항목
+
+* CONNECT_BY_ROOT 칼럼
+  * 루트 노드의 주어진 칼럼 값을 반환
+
+* CONNECT_BY_IELEAF
+  * 가장 하위 노드인 경우 1을 반환하고 그 외에는 0을 반환한다.
+
+```sql
+#상위 -> 하뮈
+SELECT LEVEL, category_type, category_name, parent_category,
+connect_by_root category_name AS root_info,connect_by_isleaf AS leaf_info
+FROM category
+START WITH parent_category IS NULL
+CONNECT BY PRIOR category_name=parent_category;
+
+#하위 -> 상위
+SELECT LEVEL, category_type AS TYPE, category_name AS name, parent_category AS parent,
+SYS_CONNECT_BY_PATH('['||category_type||']'|| category_name, '-') AS PATH
+FROM category
+START WITH category_type='소'
+CONNECT BY category_name= PRIOR parent_category;
+```
+
+<img src="./assets/image-20240307135008850.png" alt="image-20240307135008850" style="width:100%;" />
+
+<img src="./assets/image-20240307135348346.png" alt="image-20240307135348346" style="width:100%;" />
+
+```sql
+SELECT LEVEL, category_type AS TYPE, category_name AS name, parent_category AS parent,SYS_CONNECT_BY_PATH('['||category_type||']'|| category_name, '-') AS PATH
+FROM category
+START WITH category_name='노트북/PC'
+CONNECT BY category_name= PRIOR parent_category;
+```
+
+<img src="./assets/image-20240307163213208.png" alt="image-20240307163213208" style="width:100%;" />
+
+> 😎계층을 이루는 데이터를 정렬하려면?
+
+```sql
+#ORDER BY를 쓰면 계층 구조와 무관하게 정렬된다.
+SELECT LEVEL, category_type AS TYPE, category_name AS name, parent_category AS parent,SYS_CONNECT_BY_PATH('['||category_type||']'|| category_name, '-') AS PATH
+FROM category
+START WITH parent_category IS null
+CONNECT BY PRIOR category_name=parent_category
+ORDER BY name;
+
+# ORDER SIBLINGS BY 로 같은 레벨끼리 정렬
+SELECT LEVEL, category_type AS TYPE, category_name AS name, parent_category AS parent,SYS_CONNECT_BY_PATH('['||category_type||']'|| category_name, '-') AS PATH
+FROM category
+START WITH parent_category IS null
+CONNECT BY PRIOR category_name=parent_category
+ORDER SIBLINGS BY name;
+```
+
+<div style="display:flex;flex-wrap:wrap">
+    <img src="./assets/image-20240307163704720.png" alt="image-20240307163704720" style="width:100%;" />
+    <img src="./assets/image-20240307163927133.png" alt="image-20240307163927133" style="width:100%;" />
+</div>
+
+![image-20240307163955342](./assets/image-20240307163955342.png)
+
+![image-20240307164007956](./assets/image-20240307164007956.png)
 
 ![image-20240229181754064](./assets/image-20240229181754064.png)
 
@@ -3582,8 +3821,6 @@ SELECT student_name, subject, score, FIRST_VALUE(score) OVER(PARTIAL BY subject 
 
 1
 
-
-
 ![image-20240229182532490](./assets/image-20240229182532490.png)
 
 2
@@ -3592,13 +3829,9 @@ SELECT student_name, subject, score, FIRST_VALUE(score) OVER(PARTIAL BY subject 
 
 4
 
-
-
 ![image-20240229182554459](./assets/image-20240229182554459.png)
 
 ROWNUM <= 5  or ROWNUM < 6
-
-
 
 ![image-20240229182624606](./assets/image-20240229182624606.png)
 
@@ -3626,47 +3859,511 @@ ROWNUM <= 5  or ROWNUM < 6
 
 ## 1. DML
 
-![image-20240229182718166](./assets/image-20240229182718166.png)
+* Data Manipulation Language
+* DDL에서 정의한 대로 데이터를 입력하고, 입력된 데이터를 수정, 삭제, 조회 하는 명령어
 
-![image-20240229182806434](./assets/image-20240229182806434.png)
+### INSERT
 
-![image-20240229182816351](./assets/image-20240229182816351.png)
+* 테이블에 데이터를 입력하는 명령어
 
-![image-20240229182825478](./assets/image-20240229182825478.png)
+  ```sql
+  INSERT INTO 테이블명 (칼럼명1, 칼럼명2...) VALUES (데이터1, 데이터2...);
+  ```
 
-![image-20240229182835530](./assets/image-20240229182835530.png)
+  ```sql
+  INSERT INTO 입사 (부서명, 입사년월, 입사자사번) VALUES ('개발', '202201', '220101');
+  SELECT * FROM 입사;
+  ```
 
-![image-20240229182845495](./assets/image-20240229182845495.png)
+  <img src="./assets/image-20240307194033438.png" alt="image-20240307194033438" style="width:100%;" />
 
+![image-20240307194147370](./assets/image-20240307194147370.png)
 
+![image-20240307194156309](./assets/image-20240307194156309.png)
+
+![image-20240307194207552](./assets/image-20240307194207552.png)
+
+### UPDATE
+
+* 이미 저장된 데이터를 수정하고 싶을 때 사용하는 명령어
+
+* 수정하고 싶은 칼럼이 많다면 SET절에 `,` 로 이어서 명시하면 된다.
+
+  * SET 칼럼명1=데이터, 칼럼명2=데이터…
+
+* WHERE 절이 없으면 모든 ROW가 변경될 수 있다.
+
+  ```sql
+  UPDATE 테이블명 SET 칼럼명=새로운데이터 (WHERE 수정할 데이터에 대한 조건);
+  ```
+
+  ```sql
+  UPDATE 입사 SET 구분='경력' WHERE 입사자사번='220101';
+  SELECT * FROM 입사;
+  ```
+
+  <img src="./assets/image-20240307200040493.png" alt="image-20240307200040493" style="width:100%;" />
+
+![image-20240307200158424](./assets/image-20240307200158424.png)
+
+![image-20240307200208254](./assets/image-20240307200208254.png)
+
+### DELETE
+
+* 이미 저장된 데이터를 삭제하고 싶을 때 사용하는 명령어이다.
+
+* WHERE절이 없으면 테이블의 모든 ROW가 삭제된다.
+
+  ```sql
+  DELETE FROM 테이블명 (WHERE 수정할 데이터에 대한 조건);
+  ```
+
+  ```sql
+  DELETE FROM 입사 WHERE 입사자사번='220101';
+  SELECT * FROM 입사;
+  ```
+
+  <img src="./assets/image-20240307200501753.png" alt="image-20240307200501753" style="width:100%;" />
+
+> 🤔테이블에 데이터를 전부 날리고 싶다면?
+>
+> TRUNCATE 쓰는게 시스템 부하가 적다.
+> 대신, 로그가 안쌓여서 rollback이 안된다.
+>
+> > `TRUNCATE TABLE 테이블명;`
+>
+> DELETE는 COMMIT전에 rollback이 가능하다
+
+![image-20240307201300362](./assets/image-20240307201300362.png)
+
+![image-20240307201310565](./assets/image-20240307201310565.png)
+
+![image-20240307201320357](./assets/image-20240307201320357.png)
+
+### MERGE
+
+* 테이블에 새로운 데이터를 입력하거나 
+
+* 이미 저장되어 있는 데이터에 대한 변경 작업을 
+
+* 한 번에 할 수 있도록 해주는 명령어
+
+  ```sql
+  SELECT * FROM departments_backup;
+  
+  #(조건)department_backup 테이블 미리 있어야 함.
+  MERGE
+  	INTO departments_backup db #department_backup 테이블의 데이터를 변경 혹은 생성해라. 
+  	USING departments d#변경 또는 생성 할 때 departments테이블을 이용해라
+  	ON (db.department_id=d.department_id)#department_backup테이블에 departmentsdml department_id와 동일한 값이 있나
+  WHEN MATCHED THEN #조건에 맞는 데이터가 있으면 그 데이터를 변경해라
+  	UPDATE
+  	UPDATE SET db.department_name=d.department_name,
+                  db.manager_id = d.manager_id,
+                  db.location_id = d.location_id
+  WHEN NOT MATCHED THEN #조건에 맞는 데이터가 없으면 그 데이터를 생성해라
+  	INSERT (db.department_id, db.department_name, db.manager_id, db.location_id) 
+  	VALUES (d.department_id, d.department_name, d.manager_id, d.location_id);
+  ```
+
+  <div style="display:flex;flex-wrap:wrap">
+      <img src="./assets/image-20240307204605234.png" alt="image-20240307204605234" style="width:100%;" />
+  </div>
+
+```sql
+#특정 조건의 데이터만 백업
+MERGE
+	INTO departments_backup db
+	USING (SELECT * FROM departments WHERE manager_id IS NOT NULL) d
+	ON (db.department_id=d.department_id)
+WHEN MATCHED THEN 
+	UPDATE
+	SET db.department_name=d.department_name,
+		db.manager_id = d.manager_id,
+		db.location_id = d.location_id
+WHEN NOT MATCHED THEN
+	INSERT (db.department_id, db.department_name, db.manager_id, db.location_id)
+	VALUES (d.department_id, d.department_name, d.manager_id, d.location_id);
+	
+# when matched then 또는 when not matched then 둘 중 하나만 써도 됨
+MERGE
+	INTO departments_backup db
+	USING (SELECT * FROM departments WHERE manager_id IS NOT NULL) d
+	ON (db.department_id=d.department_id)
+WHEN MATCHED THEN 
+	UPDATE
+	SET db.department_name=d.department_name,
+		db.manager_id = d.manager_id,
+		db.location_id = d.location_id;
+
+MERGE
+	INTO departments_backup db
+	USING (SELECT * FROM departments WHERE manager_id IS NOT NULL) d
+	ON (db.department_id=d.department_id)
+WHEN NOT MATCHED THEN
+	INSERT (db.department_id, db.department_name, db.manager_id, db.location_id)
+	VALUES (d.department_id, d.department_name, d.manager_id, d.location_id);
+WHEN NOT MATCHED THEN INSERT VALUES (s.col1, s.col2, s.col3);
+```
+
+![image-20240307220620797](./assets/image-20240307220620797.png)
+
+![image-20240307220629558](./assets/image-20240307220629558.png)
 
 ## 2. TCL
 
-![image-20240229182854538](./assets/image-20240229182854538.png)
+* 트랜잭션을 제어하는 명령어
+* **COMMIT**, **ROLLBACK**, **SAVEPOINT** 
+* transaction control language
+
+### transaction
+
+* 쪼개질 수 없는 업무 처리의 단위
+
+* Ex. 쇼핑몰에서 티셔츠를 사는데 발생한는 트랜잭션은 다음과 같은 2 가지 액션으로 이루어져 있다.
+
+  * 티셔츠를 하나 결제한다.
+  * 티셔츠 재고가 하나 차감된다.
+
+  이 액션 중 하나라도 실패하면 진행되버린 액션이 ROLLBACK되어야 한다.
+
+### transaction의 특징
+
+* atomicity
+  * 트랜잭션으로 묶인 일련의 동작들은 모두 성공하거나 모두 실패해야 한다.
+* consistency
+  * 트랜잭션이 완료된 후에도 데이터베이스가 가진 데이터에 일관성이 있어야 한다.
+  * Ex. 이미 결제된 티셔츠의 수량과 남아 있는 티셔츠 재고의 합은 쇼핑몰이 처음 보유하고 있었던 티셔츠의 총 수량과 일치해야 한다.
+* isolution 
+  * 하나의 트랜잭션은 고립되어 수행되어야 한다.
+  * Ex. 내가 구매하고자 하는 티셔츠를 지금 다른 사람이 먼저 구매하고 있다면 나는 재고 데이터를 참조하거나 변경할 수 없고 그 사람의 트랜잭션이 끝날 때 까지 기다려야 한다.
+* durability
+  * 트랜잭션이 성공적으로 수행되었을 때 트랜잭션이 변경한 데이터가 영구적으로 저장되어야 한다.
+  * 모든 트랜잭션이 로그에 남겨진 뒤 COMMIT되어야 하고, 이후 시스템 장애가 발생하더라도 복구 가능해야 한다.
+
+### COMMIT
+
+* **INSERT**, **DELETE**, **UPDATE** 후 변경된 내용을 확정, 반영하는 명령어
+* 실행 안하면 메모리까지만 반영이 되어 언제든 휘발될 수 있고, 다른 사용자는 변경된 값을 조회할 수 없다.
+* 이걸 실행해야 최종적으로 데이터 파일에 기록이 되고 트랜잭션이 완료되는 것
+* UPDATE 후 오랫동안 commit이나 rollback을 안하면 lock이 걸려서 다른 사용자가  변경할 수 없게 된다.
+
+### ROLLBACK
+
+* **INSERT**, **DELETE**, **UPDATE**  후 변경된 내용을 취소하는 명령어
+* 변경 이전 값으로 복구
+* UPDATE 후 오랫동안 commit이나 rollback을 안하면 lock이 걸려서 다른 사용자가  변경할 수 없게 된다.
+
+### SAVEPOINT
+
+* ROLLBACK 할 때 전체 작업을 되돌리지 않고 일부만 되돌릴 수 있게 하는 기능
+
+* ROLLBACK 뒤에 특정 SAVEPOINT를 지정해주면 그 지점까지만 데이터가 복구된다.
+
+  <img src="./assets/image-20240307222308440.png" alt="image-20240307222308440" style="width:100%;" />
+
+![image-20240307222338911](./assets/image-20240307222338911.png)
 
 ![image-20240229182903379](./assets/image-20240229182903379.png)
 
 ## 3. DDL
 
-![image-20240229182912113](./assets/image-20240229182912113.png)
+* Data definition language
+* 데이터를 정의하는 SQL
+* **CREATE**, **ALTER**, **DROP** , **RENAME**, **TRUNCATE** 
 
-![image-20240229182920736](./assets/image-20240229182920736.png)
+| 유형 | 데이터 타입         |
+| ---- | ------------------- |
+| 문자 | CHAR, VARCHAR, CLOB |
+| 숫자 | NUMBER              |
+| 날짜 | DATE                |
 
-![image-20240229182928713](./assets/image-20240229182928713.png)
+### CREATE
 
-![image-20240229182940129](./assets/image-20240229182940129.png)
+* 테이블을 생성하기 위한 명령어
+
+  ```sql
+  CREATE TABLE 테이블명 (
+  	칼럼명1 데이터타입 [DEFAULT/NULL여부],
+  	...
+  );
+  ```
+
+  ```sql
+  CREATE TABLE teacher (
+  	teacher_no NUMBER NOT NULL,
+  	teacher_name varchar2(20) NOT NULL,
+  	subject_id varchar2(5) NOT NULL,
+  	mobile_no varchar2(15),
+  	address varchar2(100),
+  	CONSTRAINT teacher_pk PRIMARY KEY (teacher_no),
+  	CONSTRAINT teacher_fk FOREIGN keky (subject_id) REFERENCES subject(subject_id)
+  );
+  ```
+
+* 주의사항
+
+  * 테이블명은 고유해야 한다.
+  * 한 테이블 내에서 칼럼명은 고유해야 한다.
+  * 칼럼명 뒤에 데이터 유형과 데이터 크기가 명시되어야 한다.
+  * 칼럼에 대한 정의는 괄호`()` 안에 기술한다.
+  * 각 칼럼들은 `,`로 구분된다.
+  * 테이블 명과 칼럼명은 숫자로 시작될 수 없다.
+  * 마지막은 `;`로 끝난다.
+
+### **CONSTRAINT**(제약 조건)
+
+* 테이블에 저장될 데이터의 무결성(데이터의 정확성과 일관성을 유지하고, 데이터에 결손과 부정합이 없음)을 위한 장치
+
+* 제약 조건의 종류
+
+  <table>
+      <tr>
+          <td>PRIMARY KEY (기본키)</td>
+          <td>
+              <ul>
+                  <li>테이블에 저장된 각각의 row에 대한 고유성을 보장</li>
+                  <li>한 테이블에 하나씩만 정의 할 수 있다.</li>
+                  <li>NULL 값이 입력될 수 없다</li>
+             		<li>자동으로 UNIQUE INDEX 로 생성된다.</li>
+              </ul>
+          </td>
+      </tr>
+       <tr>
+          <td>UNIQUE KEY(고유키)</td>
+          <td>
+              <ul>
+                  <li>테이블에 저장된 각각의 row에 대한 고유성을 보장</li>
+                  <li>NULL 값이 입력될 수 있다</li>
+              </ul>
+           </td>
+      </tr>
+       <tr>
+          <td>NOT NULL</td>
+          <td>null 입력 안됨</td>
+      </tr>
+      <tr>
+          <td>CHECK</td>
+          <td>
+              칼럼에 저장될 수 있는 값의 범위를 제한한다.<br>
+              <code>
+                  Ex. CONSTRAINT chk_del_yn CHECK(삭제_여부 IN('Y', 'N'))
+              </code>
+          </td>
+      </tr>
+      <tr>
+          <td>FOREIGN KEY(외래키)</td>
+          <td>
+              <ul>
+                  <li>하나의 테이블이 다른 테이블을 참조하고자 할 때 정의한다.</li>
+                  <li>저장된 값이 어딘가에 또 하나 존재해야 한다.</li>
+                  <li>참조 무결성 제약 옵션</li>
+              </ul>
+          </td>
+      </tr>
+  </table>
+
+  > 📗**참조 무결성** 규정 관련 옵션
+  >
+  > <table>
+  >     <tr>
+  >         <td>CASCADE</td>
+  >         <td>parent값 삭제 시 child값 같이 삭제</td>
+  >     </tr>
+  >     <tr>
+  >         <td>SET NULL </td>
+  >         <td>parent값 삭제 시 child의 해당 칼럼을 null값으로 변경</td>
+  >     </tr>
+  >     <tr>
+  >         <td>SET DEFAULT </td>
+  >         <td>parent값 삭제 시 child의 해당 칼럼을 default값으로 변경</td>
+  >     </tr>
+  >     <tr>
+  >         <td>RESTRICT </td>
+  >         <td>child 테이블에 해당 데이터가 pk로 존재하지 않는 경우에만 parent 값 삭제 및 수정 가능<br>고아를 만들지 않겠어</td>
+  >     </tr>
+  >     <tr>
+  >         <td>NO ACTION </td>
+  >         <td>참조 무결성 제약이 걸려 있는 경우 삭제 및 수정 불가</td>
+  >     </tr>
+  > </table>
+
+* 완전히 새로운 테이블을 생성하는 것이 아니고, 기존에 있던 테이블을 복사해서 생성하고 싶은 경우?
+
+  * CTAS
+
+    ```sql
+    CREATE TABLE target테이블명 AS SELECT * FROM source테이블명
+    ```
+
+### ALTER
+
+####  ADD COLUMN
+
+* 추가된 칼럼의 위치는 맨 끝
+
+  * 별도 위치 지정 불가능
+
+  ```sql
+  ALTER TABLE 테이블명 ADD 칼럼명 데이터유형;
+  ALTER TABLE teacher ADD birthday varchar2(8);
+  ```
+
+#### DROP COLUMN
+
+* 한번 삭제한 칼럼은 복구할 수 없다.
+
+  ```sql
+  ALTER TABLE 테이블명 DROP COLUMN 칼럼명;
+  ALTER TABLE 테이블명 DROP COLUMN address;
+  ```
+
+####  MODIFY COLUMN
+
+* 데이터 유형, default 값, not null제약 조건에 대한 변경 가능
+
+  * 칼럼에 저장된 데이터가 없어야 데이터 유형 변경 가능
+
+* 데이터를 손실하지 않는 선에서 데이터 크기 줄일 수 있다.
+
+* default 값 변경 시, 이후부터 적용됨
+
+  ```sql
+  ALTER TABLE 테이블명 MODIFY (칼럼명1 데이터유형 [DEFAULT 값] [NOT NULL], 칼럼명2 데이터유형 ...;)
+  ALTER TABLE teacher MODIFY (birthday varchar2(8) DEFAULT '990607' NOT NULL);
+  ```
+
+#### RENAME COLUMN
+
+```sql
+ALTER TABLE 테이블명 RENAME COLUMN 변경할_칼럼명 TO 변경한_이름;
+ALTER TABLE teacher RENAME COLUMN mobile_no TO hp_no;
+```
+
+#### ADD CONSTRAINT
+
+```sql
+ALTER TABLE 테이블명 ADD CONSTRAINT 제약조건명 제약조건 (칼럼명);
+ALTER TABLE teacher ADD CONSTRAINT teacher_fk FOREIGN KEY (subject_id) REFERENCES subject(subject_id);
+```
+
+#### DROP TABLE
+
+* 해당 테이블을 참조하고 있는 다른 테이블이 있을 때, cascade옵션을 명시하지 않으면 삭제 안됨
+
+  * cascade constraint == "나는 너와의 관계를 끊고 사라지겠다."
+
+  ```sql
+  DROP TABLE 테이블명 [CASCADE CONSTRAINT];
+  
+  #자식 테이블 있으면 에러남
+  DROP TABLE subject;
+  
+  #아몰랑 삭제
+  DROP TABLE subject CASCADE CONSTRAINT;
+  ```
+
+#### TRUNCATE TABLE
+
+* delete 명령어와 유사하지만 저장 공간이 재사용되도록 초기화된다
+
+  * rollback 불가능
+
+  ```sql
+  TRUNCATE TABLE 테이블명;
+  TRUNCATE TABLE TEACHER ;
+  ```
+
+  ![image-20240307235742015](./assets/image-20240307235742015.png)
 
 
 
 ## 4. DCL
 
+* USER를 생성하고 권한을 부여하거나 회수하는 명령어
+* data control language
+* **CREATE** **USER**, **ALTER** **USER**, **DROP** **USER**
 
+### USER 관련 명령어
 
-![image-20240229182949114](./assets/image-20240229182949114.png)
+* 하나의 database는 여러개의 user를 가질 수 있다.
+* 방에는 여러명의 룸메가 있을 수 있고, 각각 다른 비밀번호로 방에 들어온다.
 
-![image-20240229183002303](./assets/image-20240229183002303.png)
+#### CREATE USER
 
-![image-20240229183010856](./assets/image-20240229183010856.png)
+* 권한이 있어야 수행 가능
+
+  ```sql
+  CREATE USER 사용자명 IDENTIFIED BY 비밀번호;
+  CREATE USER mtak IDENTIFIED BY 0235;
+  ```
+
+#### ALTER USER
+
+```sql
+ALTER USER 사용자명 IDENTIFIED BY 비밀번호;
+ALTER USER mtak IDENTIFIED BY 0235;
+```
+
+#### DROP USER
+
+```sql
+DROP USER 사용자명;
+DROP USER mtak;
+```
+
+###  권한 관련 명령어
+
+* 룸메를 만들고 비밀번호를 줬다면 방을 이용할 수 있는 권한을 부여한다.(그래야 들어가지)
+
+#### GRANT
+
+* 사용자에게 권한을 부여
+
+  ```sql
+  GRANT 권한 TO 사용자명;
+  GRANT CREATE SESSION TO mtak;
+  GRANT CREATE USER TO mtak;
+  GRANT CREATE TABLE TO mtak;
+  ```
+
+#### REVOKE
+
+* 사용자에게 권한을 회수
+
+  ```sql
+  REVOKE 권한 FROM 사용자명;
+  REVOKE CREATE TABLE FROM mtak;
+  ```
+
+### ROLE 관련 명령어
+
+* ROLE : 특정 권한들을 하나의 세트처럼 묶는 것.
+
+#### ROLE을 이용한 권한 부여
+
+1. ROLE 생성
+
+   ```sql
+   CREATE ROLE 롤명;
+   CREATE ROLE create_r;
+   ```
+
+2. ROLE에 권한을 부여
+
+   ```sql
+   GRANT 권한 TO 롤명;
+   GRANT CREATE SESSION, CREATE USER, CREATE TABLE TO create_r;
+   ```
+
+3. ROLE을 사용자에게 부여
+
+   ```sql
+   GRANT 롤명 TO 사용자명;
+   GRANT create_r TO mtak;
+   ```
+
+![image-20240308001122519](./assets/image-20240308001122519.png)
 
 # 문제
 
@@ -3719,6 +4416,8 @@ ROWNUM <= 5  or ROWNUM < 6
 2
 
 ![image-20240229183237619](./assets/image-20240229183237619.png)
+
+2
 
 ![image-20240229183246075](./assets/image-20240229183246075.png)
 
