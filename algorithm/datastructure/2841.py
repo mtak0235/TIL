@@ -1,12 +1,22 @@
-from collections import deque
-n, p = map(int, input())
+import sys
+input = sys.stdin.readline
+n, p = map(int, input().split())
 cnt = 0
-guitar = {_:deque() for _ in range(1,7)}
+guitar = {_:[] for _ in range(1,7)}
 for _ in range(n):
-	ln, fn = map(int, input())
-	#top에 있는게 없거나 나보다 낮으면 push
-	if 
-	#top에 있는게 나보다 높으면
-	#	top에 있는게 없거나 나보다 낮을 때 까지 pop
-	#	나를 push
+	ln, fn = map(int, input().split())
+	line = guitar[ln]
+	if len(line) == 0 or line[-1] < fn:
+		line.append(fn)
+		cnt += 1
+	elif line[-1] > fn:
+		line.pop()
+		cnt += 1
+		while not (len(line) == 0 or line[-1] <= fn):
+			line.pop()
+			cnt+=1
+		if len(line) != 0 and line[-1] == fn: continue
+		line.append(fn)
+		cnt+=1
+print(cnt)
 	
