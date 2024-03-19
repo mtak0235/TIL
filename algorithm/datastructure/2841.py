@@ -19,4 +19,3 @@ for _ in range(n):
 		line.append(fn)
 		cnt+=1
 print(cnt)
-	
