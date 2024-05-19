@@ -1,9 +1,9 @@
 package lang.wrapper;
 
-public class MyIntegerNullMain0 {
+public class MyIntegerNullMain1 {
 
   public static void main(String[] args) {
-    int[] arr = {-1, 0, 1, 2, 3};
+    MyInteger[] arr = {new MyInteger(-1), new MyInteger(0), new MyInteger(1)};
     System.out.println(findValue(arr, -1));
     System.out.println(findValue(arr, 0));
     System.out.println(findValue(arr, 1));
@@ -11,12 +11,12 @@ public class MyIntegerNullMain0 {
 
   }
 
-  private static int findValue(int[] arr, int target) {
-    for (int i : arr) {
-      if (i == target) {
+  private static MyInteger findValue(MyInteger[] arr, int target) {
+    for (MyInteger i : arr) {
+      if (i.getValue() == target) {
         return i;
       }
     }
-    return -1;
+    return null;
   }
 }
