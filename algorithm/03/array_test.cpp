@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
 void insert(int idx, int num, int arr[], int& len){
@@ -8,10 +8,10 @@ void insert(int idx, int num, int arr[], int& len){
   ++len;
   arr[idx] = num;
 }
-
 void erase(int idx, int arr[], int& len){
-  for (int i = idx ; i < len; i++)
+  for (int i = idx ; i < len - 1; i++) {
     arr[i] = arr[i + 1];
+  }
   len--;
 }
 

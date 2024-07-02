@@ -3,22 +3,11 @@
   "configurations": [
     {
       "name": "C/C++ Runner: Debug Session",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
       "args": [],
-      "stopAtEntry": false,
-      "externalConsole": true,
-      "cwd": "c:/Users/mtak0/TIL/algorithm/cpp_ref",
-      "program": "c:/Users/mtak0/TIL/algorithm/cpp_ref/build/Debug/outDebug",
-      "MIMode": "gdb",
-      "miDebuggerPath": "gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ]
+      "cwd": "/Users/mtak/til/algorithm/03",
+      "program": "/Users/mtak/til/algorithm/03/build/Debug/outDebug"
     }
   ]
 }

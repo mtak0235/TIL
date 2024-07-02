@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <bits/stdc++.h>
 using namespace std;
 
 int func1(int N){
