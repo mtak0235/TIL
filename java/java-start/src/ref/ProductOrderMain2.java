@@ -32,6 +32,7 @@ public class ProductOrderMain2 {
         System.out.println("총 결제 금액:\t" + getTotalAmount(productOrders));
     }
 
+
     static void printOrders(ProductOrder[] orders) {
         for (ProductOrder order : orders) {
             System.out.println("order = " + order);
