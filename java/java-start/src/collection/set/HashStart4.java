@@ -1,5 +1,7 @@
 package collection.set;
 
+import java.util.Arrays;
+
 public class HashStart4 {
 	static final int CAPACITY = 10;
 	public static void main(String[] args) {
@@ -9,13 +11,25 @@ public class HashStart4 {
 		System.out.println(hashIndex(8));
 		System.out.println(hashIndex(14));
 		Integer[] inputArray = new Integer[CAPACITY];
-		add(inputArray);
+		add(inputArray, 1);
+		add(inputArray, 2);
+		add(inputArray, 5);
+		add(inputArray, 8);
+		add(inputArray, 14);
+		add(inputArray, 99);
+		System.out.println("inputArray = " + Arrays.toString(inputArray));
 
+		//검색
+		int searchValue = 14;
+		int hashIndex = hashIndex(searchValue);
+		System.out.println("searchValue hashIndex " + hashIndex);
+		Integer result = inputArray[hashIndex];
+		System.out.println(result);
 	}
 
-	private static void add(Integer[] inputArray) {
-		int hashIndex = hashIndex(1);
-		inputArray[hashIndex] = 1;
+	private static void add(Integer[] inputArray, int value) {
+		int hashIndex = hashIndex(value);
+		inputArray[hashIndex] = value;
 	}
 
 	private static int hashIndex(int value) {
