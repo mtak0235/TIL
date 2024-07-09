@@ -27,7 +27,8 @@ public class Deck {
 		if (isEmpty()) {
 			throw new NoCardException("No card anymore");
 		}
-		List<Card> result = cards.subList(0, count);
+		List<Card> result = new ArrayList<>(cards.subList(0, count));
+//		List<Card> result = cards.subList(0, count); 이렇게 짜면 앙대요
 		cards.removeAll(result);
 		return result;
 	}

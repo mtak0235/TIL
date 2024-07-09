@@ -12,10 +12,12 @@ public class Card implements Comparable<Card>{
 	public int compareTo(Card o) {
 		if (number < o.number)
 			return -1;
+		if (number > o.number)
+			return 1;
 		return shape.compareTo(o.shape);
 	}
 
-	public enum Shape implements Comparable<Shape> {
+	public enum Shape {
 		SPADE("\u2660"), HEART("\u2665"), DIA("\u2666"), CLOVER("\u2663"),
 		;
 		private String value;
