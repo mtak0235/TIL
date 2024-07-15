@@ -12,7 +12,7 @@ public class MemberApp {
 	public static void main(String[] args) {
 		ApplicationContext context = new AnnotationConfigApplicationContext(
 			AppConfig.class);
-		MemberService memberService = context.getBean("memberService", MemberService.class);
+		MemberService memberService = context.getBean("memberService"/*method name*/, MemberService.class);
 
 		Member member = new Member(1L, "mtak", Grade.VIP);
 		memberService.join(member);

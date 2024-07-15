@@ -17,28 +17,29 @@ public class AppConfig {
 	private MemberService memberService;
 	private OrderService orderService;
 	private MemberRepository memberRepository;
+	private static DiscountPolicy discountPolicy;
 
 	@Bean
 	public MemberRepository memberRepository() {
-		if (memberRepository == null) {
-			this.memberRepository = new MemoryMemberRepository();
-		}
-		return memberRepository;
+		System.out.println("AppConfig.memberRepository");
+		return new MemoryMemberRepository();
 	}
 
 	@Bean
 	public MemberService memberService() {
-		if (memberService == null) {
-			memberService = new MemberServiceImpl(memberRepository());
-		}
-		return memberService;
+		System.out.println("AppConfig.memberService");
+		return new MemberServiceImpl(memberRepository());
 	}
 
 	@Bean
 	public OrderService orderService() {
-		if (orderService == null) {
-			this.orderService = new OrderServiceImpl(memberService(), new FixedDiscountPolicy());
-		}
-		return orderService;
+		System.out.println("AppConfig.orderService");
+		return new OrderServiceImpl(memberRepository(), discountPolicy());
+	}
+
+	@Bean
+	public DiscountPolicy discountPolicy() {
+		System.out.println("AppConfig.discountPolicy");
+		return new FixedDiscountPolicy();
 	}
 }
