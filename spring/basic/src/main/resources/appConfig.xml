@@ -9,7 +9,7 @@
     <bean id="memberRepository" class="com.mtakworld.basic.member.MemoryMemberRepository"/>
     <bean id="discountPolicy" class="com.mtakworld.basic.discount.FixedDiscountPolicy"/>
     <bean id="orderService" class="com.mtakworld.basic.order.OrderServiceImpl">
-        <constructor-arg name="memberService" ref="memberService"/>
+        <constructor-arg name="memberRepository" ref="memberRepository"/>
         <constructor-arg name="discountPolicy" ref="discountPolicy"/>
     </bean>
 

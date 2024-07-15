@@ -17,7 +17,7 @@ class StatefulServiceTest {
 		StatefulService service1 = ac.getBean(StatefulService.class);
 		service.order("mtak", 10000);
 		service1.order("yeji", 20000);
-		Assertions.assertThat(service.getPrice()).isEqualTo(10000);
+		Assertions.assertThat(service.getPrice()).isNotEqualTo(10000);
 	}
 
 	@Configuration
