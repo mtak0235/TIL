@@ -18,6 +18,7 @@ class OrderServiceTest {
 	MemberService memberService;
 	OrderService orderService;
 	AppConfig appConfig;
+
 	@BeforeEach
 	public void setUp() {
 		appConfig = new AppConfig();
@@ -33,4 +34,5 @@ class OrderServiceTest {
 		Order order = orderService.createOrder(memberId, "bucket", 10000);
 		assertThat(order.getDiscountPrice()).isEqualTo(1000);
 	}
+
 }

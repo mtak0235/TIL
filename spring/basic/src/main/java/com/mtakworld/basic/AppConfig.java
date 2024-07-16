@@ -12,7 +12,7 @@ import com.mtakworld.basic.member.MemoryMemberRepository;
 import com.mtakworld.basic.order.OrderService;
 import com.mtakworld.basic.order.OrderServiceImpl;
 
-@Configuration
+// @Configuration
 public class AppConfig {
 	private MemberService memberService;
 	private OrderService orderService;

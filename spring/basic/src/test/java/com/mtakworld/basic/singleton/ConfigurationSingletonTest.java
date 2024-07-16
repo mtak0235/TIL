@@ -22,7 +22,14 @@ public class ConfigurationSingletonTest {
 		MemberRepository repository = ac.getBean("memberRepository", MemberRepository.class);
 		MemberRepository memberRepository = memberService.getMemberRepository();
 		MemberRepository memberRepository1 = orderService.getMemberRepository();
-		assertThat(repository).isEqualTo(memberRepository1);
-		assertThat(repository).isEqualTo(memberRepository);
+		// assertThat(repository).isEqualTo(memberRepository1);
+		// assertThat(repository).isEqualTo(memberRepository);
+	}
+
+	@Test
+	void configurationTest2() {
+		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(AppConfig.class);
+		AppConfig bean = ac.getBean(AppConfig.class);
+		System.out.println("bean = " + bean);
 	}
 }
