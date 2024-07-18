@@ -3,7 +3,7 @@ package com.mtakworld.mvc.servlet.basic.web.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import com.mtakworld.mvc.servlet.basic.domain.member.MemberRepository;
+import com.mtakworld.mvc.servlet.domain.member.MemberRepository;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

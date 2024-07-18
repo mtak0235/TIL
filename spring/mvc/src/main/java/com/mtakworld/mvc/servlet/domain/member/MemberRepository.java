@@ -1,4 +1,4 @@
-package com.mtakworld.mvc.servlet.basic.domain.member;
+package com.mtakworld.mvc.servlet.domain.member;
 
 import java.util.ArrayList;
 import java.util.HashMap;

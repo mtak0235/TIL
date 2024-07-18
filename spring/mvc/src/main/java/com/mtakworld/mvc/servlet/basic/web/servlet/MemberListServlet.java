@@ -1,13 +1,11 @@
 package com.mtakworld.mvc.servlet.basic.web.servlet;
 
-import static com.mtakworld.mvc.servlet.basic.domain.member.MemberRepository.*;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import com.mtakworld.mvc.servlet.basic.domain.member.Member;
-import com.mtakworld.mvc.servlet.basic.domain.member.MemberRepository;
+import com.mtakworld.mvc.servlet.domain.member.Member;
+import com.mtakworld.mvc.servlet.domain.member.MemberRepository;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

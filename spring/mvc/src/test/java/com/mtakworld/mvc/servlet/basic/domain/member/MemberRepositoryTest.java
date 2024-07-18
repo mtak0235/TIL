@@ -1,14 +1,14 @@
 package com.mtakworld.mvc.servlet.basic.domain.member;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+
+import com.mtakworld.mvc.servlet.domain.member.Member;
+import com.mtakworld.mvc.servlet.domain.member.MemberRepository;
 
 class MemberRepositoryTest {
 
