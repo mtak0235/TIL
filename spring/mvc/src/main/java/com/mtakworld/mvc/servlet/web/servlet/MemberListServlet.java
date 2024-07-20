@@ -1,4 +1,4 @@
-package com.mtakworld.mvc.servlet.basic.web.servlet;
+package com.mtakworld.mvc.servlet.web.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;

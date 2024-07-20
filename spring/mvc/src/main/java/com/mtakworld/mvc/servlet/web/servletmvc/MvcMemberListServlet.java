@@ -1,4 +1,4 @@
-package com.mtakworld.mvc.servlet.basic.web.servletmvc;
+package com.mtakworld.mvc.servlet.web.servletmvc;
 
 import java.io.IOException;
 import java.util.List;
