@@ -1,6 +1,8 @@
 package com.mtakworld.itemservice.web.basic;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +18,9 @@ import com.mtakworld.itemservice.domain.item.ItemRepository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/basic/items")
 @RequiredArgsConstructor
@@ -25,6 +29,7 @@ public class BasicItemController {
 
 	@GetMapping
 	public String items(Model model) {
+
 		List<Item> items = itemRepository.findAll();
 		model.addAttribute("items", items);
 		return "basic/items";
@@ -37,8 +42,18 @@ public class BasicItemController {
 		return "basic/item";
 	}
 
+	@ModelAttribute("regions")
+	public Map<String, String> model(Model model) {
+		LinkedHashMap<String, String> regions = new LinkedHashMap<>();
+		regions.put("SEOUL", "서울");
+		regions.put("BUSAN", "부산");
+		regions.put("JEJU", "제주");
+		return regions;
+	}
+
 	@GetMapping("/add")
-	public String addForm() {
+	public String addForm(Model model) {
+		model.addAttribute("item", new Item());
 		return "basic/addForm";
 	}
 
@@ -83,6 +98,10 @@ public class BasicItemController {
 
 	@PostMapping("/add")
 	public String save(Item item, RedirectAttributes redirectAttributes) {
+
+		log.info("item.open={}", item.getOpen());
+		log.info("item.regions={}", item.getRegions());
+
 		itemRepository.save(item);
 		redirectAttributes.addAttribute("itemId", item.getId());
 		redirectAttributes.addAttribute("status", true);
