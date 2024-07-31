@@ -1,9 +1,13 @@
 package com.mtakworld.itemservice.web.basic;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.mtakworld.itemservice.domain.item.DeliveryCode;
 import com.mtakworld.itemservice.domain.item.Item;
 import com.mtakworld.itemservice.domain.item.ItemRepository;
+import com.mtakworld.itemservice.domain.item.ItemType;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -101,6 +107,7 @@ public class BasicItemController {
 
 		log.info("item.open={}", item.getOpen());
 		log.info("item.regions={}", item.getRegions());
+		log.info("item.itemType={}", item.getItemType());
 
 		itemRepository.save(item);
 		redirectAttributes.addAttribute("itemId", item.getId());
@@ -125,6 +132,27 @@ public class BasicItemController {
 	public void init() {
 		itemRepository.save(new Item("후우링", 10000, 10));
 		itemRepository.save(new Item("파란 후우링", 20000, 20));
+	}
 
+	@ModelAttribute("itemTypes")
+	public ItemType[] itemTypes() {
+		return ItemType.values();
+	}
+
+	@ModelAttribute("deliveryCodes")
+	public List<DeliveryCode> deliveryCodes() {
+		ArrayList<DeliveryCode> deliveryCodes = new ArrayList<>();
+		deliveryCodes.add(new DeliveryCode("FAST", "빠른 배송"));
+		deliveryCodes.add(new DeliveryCode("NORMAL", "일반 배송"));
+		deliveryCodes.add(new DeliveryCode("SLOW", "느린 배송"));
+		return deliveryCodes;
+	}
+
+	@Bean
+	public MessageSource messageSource() {
+		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+		messageSource.setBasenames("messages", "errors");
+		messageSource.setDefaultEncoding("utf-8");
+		return messageSource;
 	}
 }

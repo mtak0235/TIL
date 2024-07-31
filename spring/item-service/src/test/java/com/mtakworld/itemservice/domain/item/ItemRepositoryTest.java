@@ -1,11 +1,9 @@
 package com.mtakworld.itemservice.domain.item;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -44,6 +42,6 @@ class ItemRepositoryTest {
 		Item find = itemRepository.findById(saved.getId());
 		assertThat(find.getItemName()).isEqualTo(update.getItemName());
 		assertThat(find.getPrice()).isEqualTo(update.getPrice());
-		assertThat(find.getQuantiy()).isEqualTo(update.getQuantiy());
+		assertThat(find.getQuantity()).isEqualTo(update.getQuantity());
 	}
 }
