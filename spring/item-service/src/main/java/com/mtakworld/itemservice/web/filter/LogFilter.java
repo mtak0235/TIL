@@ -33,7 +33,7 @@ public class LogFilter implements Filter {
 						  .toString();
 		try {
 			MDC.put("request_id", uuid);
-			log.info("REQUEST {} {}", uuid, requestURI);
+			log.info("REQUEST {} {} {}", uuid, requestURI, servletRequest.getDispatcherType());
 			filterChain.doFilter(servletRequest, servletResponse);
 		} catch (Exception e) {
 			throw e;

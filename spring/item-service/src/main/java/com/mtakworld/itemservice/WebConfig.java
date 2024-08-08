@@ -15,6 +15,7 @@ import com.mtakworld.itemservice.web.filter.LoginCheckFilter;
 import com.mtakworld.itemservice.web.interceptor.LogInterceptor;
 import com.mtakworld.itemservice.web.interceptor.LoginCheckInterceptor;
 
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 
 @Configuration
@@ -26,6 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
 		filterFilterRegistrationBean.setFilter(new LogFilter());
 		filterFilterRegistrationBean.setOrder(1);
 		filterFilterRegistrationBean.addUrlPatterns("/*");
+		filterFilterRegistrationBean.setDispatcherTypes(DispatcherType.ERROR, DispatcherType.REQUEST);
+
 		return filterFilterRegistrationBean;
 	}
 
@@ -43,13 +46,12 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addInterceptor(new LogInterceptor())
 				.order(1)
 				.addPathPatterns("/**")
-				.excludePathPatterns("/css/**", "/*.ico", "/error");
+				.excludePathPatterns("/css/**", "/*.ico", "/error", "/error-page/**");
 
-		registry.addInterceptor(new LoginCheckInterceptor())
-				.order(2)
-				.addPathPatterns("/**")
-				.excludePathPatterns("/css/**", "/*.ico", "/error", "/login", "/logout", "/", "members/add");
-
+		// registry.addInterceptor(new LoginCheckInterceptor())
+		// 		.order(2)
+		// 		.addPathPatterns("/**")
+		// 		.excludePathPatterns("/css/**", "/*.ico", "/error", "/login", "/logout", "/", "members/add");
 	}
 
 	@Override

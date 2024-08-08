@@ -24,7 +24,7 @@ public class LogInterceptor implements HandlerInterceptor {
 		request.setAttribute(LOG_ID, uuid);
 		if (handler instanceof HandlerMethod hm) {
 		}
-		log.info("REQUEST {} {} {]", uuid, uri, handler);
+		log.info("REQUEST {} {} {} {}", uuid, uri, handler, request.getDispatcherType());
 		return true;
 	}
 
@@ -39,7 +39,7 @@ public class LogInterceptor implements HandlerInterceptor {
 		Exception ex) throws Exception {
 		String uri = request.getRequestURI();
 		String logId = (String)request.getAttribute(LOG_ID);
-		log.info("RESPONSE {} {} {}", logId, uri, handler);
+		log.info("RESPONSE {} {} {} {}", logId, uri, handler, request.getDispatcherType());
 		if (ex != null) {
 			log.error("afterCompletion error", ex);
 		}
