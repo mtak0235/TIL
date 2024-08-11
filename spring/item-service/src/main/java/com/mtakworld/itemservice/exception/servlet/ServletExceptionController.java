@@ -30,4 +30,5 @@ public class ServletExceptionController {
 	public void error500(HttpServletResponse response) throws IOException {
 		response.sendError(500, "500 sibal");
 	}
+
 }
