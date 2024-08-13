@@ -13,7 +13,7 @@ import com.mtakworld.jdbc.domain.Member;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-class MemberRepositoryV0Test {
+class MemberRepositoryV10Test {
 	MemberRepositoryV0 repository = new MemberRepositoryV0();
 
 	@Test

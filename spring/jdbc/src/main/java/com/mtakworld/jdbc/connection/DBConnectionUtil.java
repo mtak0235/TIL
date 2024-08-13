@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DBConnectionUtil {
-
 	private static Connection connection;
 
 	public static Connection getConnection() {
