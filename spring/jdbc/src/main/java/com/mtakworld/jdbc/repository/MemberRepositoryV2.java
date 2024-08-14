@@ -8,29 +8,25 @@ import java.util.NoSuchElementException;
 
 import javax.sql.DataSource;
 
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.jdbc.support.JdbcUtils;
 
-import com.mtakworld.jdbc.connection.DBConnectionUtil;
 import com.mtakworld.jdbc.domain.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /*
-JDBC -DriverManager
+JDBC -ConnectionParam
  */
 @Slf4j
 @AllArgsConstructor
-public class MemberRepositoryV1 {
+public class MemberRepositoryV2 {
 	private final DataSource dataSource;
 
-	public Member save(Member member) throws SQLException {
+	public Member save(Connection connection, Member member) throws SQLException {
 		String sql = "insert into member (member_id, money) values (?,?)";
 		PreparedStatement preparedStatement = null;
-		Connection connection = null;
 		try {
-			connection = getConnection();
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, member.getMemberId());
 			preparedStatement.setInt(2, member.getMoney());
@@ -40,28 +36,21 @@ public class MemberRepositoryV1 {
 			log.info("db error={}", e);
 			throw e;
 		} finally {
-			close(connection, preparedStatement, null);
+			JdbcUtils.closeStatement(preparedStatement);
 		}
 	}
 
-	private void close(Connection connection, PreparedStatement preparedStatement, ResultSet resultSet) {
-		JdbcUtils.closeResultSet(resultSet);
-		JdbcUtils.closeStatement(preparedStatement);
-		JdbcUtils.closeConnection(connection);
-	}
 	private Connection getConnection() throws SQLException {
 		Connection connection = dataSource.getConnection();
 		log.info("connection={} , class={}", connection, connection.getClass());
 		return connection;
 	}
 
-	public Member findById(String memberId) throws SQLException {
+	public Member findById(Connection connection, String memberId) throws SQLException {
 		String sql = "select * from member where member_id=?";
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connection = getConnection();
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, memberId);
 			resultSet = preparedStatement.executeQuery();
@@ -76,17 +65,16 @@ public class MemberRepositoryV1 {
 			log.error("db error", e);
 			throw e;
 		} finally {
-			close(connection, preparedStatement, resultSet);
+			JdbcUtils.closeResultSet(resultSet);
+			JdbcUtils.closeStatement(preparedStatement);
 		}
 	}
 
-	public void update(String memberId, int money) throws SQLException {
+	public void update(Connection connection, String memberId, int money) throws SQLException {
 		String sql = "update member set money=? where member_id=?";
-		Connection connection = null;
 		int resultSize;
 		PreparedStatement preparedStatement = null;
 		try {
-			connection = getConnection();
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(2, memberId);
 			preparedStatement.setInt(1, money);
@@ -97,17 +85,15 @@ public class MemberRepositoryV1 {
 			log.error("db error", e);
 			throw e;
 		} finally {
-			close(connection, preparedStatement, null);
+			JdbcUtils.closeStatement(preparedStatement);
 		}
 
 	}
 
-	public void delete(String memberId) throws SQLException {
+	public void delete(Connection connection, String memberId) throws SQLException {
 		String sql = "delete from member where member_id=?";
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
-			connection = getConnection();
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, memberId);
 			preparedStatement.executeUpdate();
@@ -115,23 +101,21 @@ public class MemberRepositoryV1 {
 			log.error("db error", e);
 			throw e;
 		} finally {
-			close(connection, preparedStatement, null);
+			JdbcUtils.closeStatement(preparedStatement);
 		}
 	}
 
-	public void deleteAll() throws SQLException {
+	public void deleteAll(Connection connection) throws SQLException {
 		String sql = "delete from member";
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
-			connection = getConnection();
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.execute();
 		} catch (SQLException e) {
 			log.error("db error", e);
 			throw e;
 		} finally {
-			close(connection, preparedStatement, null);
+			JdbcUtils.closeStatement(preparedStatement);
 		}
 
 	}
