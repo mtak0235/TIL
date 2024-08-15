@@ -15,7 +15,9 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
 import com.mtakworld.jdbc.domain.Member;
-import com.mtakworld.jdbc.repository.MemberRepositoryV3;
+import com.mtakworld.jdbc.repository.MemberRepository;
+import com.mtakworld.jdbc.repository.MemberRepositoryV4_2;
+import com.mtakworld.jdbc.repository.MemberRepositoryV5;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +29,9 @@ class MemberServiceV4Test {
 	public static final String MEMBER_B = "member_b";
 	public static final String MEMBER_EX = "member_ex";
 	@Autowired
-	private MemberRepositoryV3 memberRepository;
+	private MemberRepository memberRepository;
 	@Autowired
-	private MemberServiceV3_3 memberService;
+	private MemberServiceV4 memberService;
 
 	@AfterEach
 	void after() throws SQLException {
@@ -38,7 +40,7 @@ class MemberServiceV4Test {
 
 	@Test
 	@DisplayName("정상 이체")
-	void accountTransfer() throws SQLException {
+	void accountTransfer() {
 		//given
 		Member memberA = new Member(MEMBER_A, 10000);
 		Member memberB = new Member(MEMBER_B, 10000);
@@ -55,7 +57,7 @@ class MemberServiceV4Test {
 
 	@Test
 	@DisplayName("이체중 예외 발생")
-	void accountTransferEx() throws SQLException {
+	void accountTransferEx() {
 		//given
 		Member memberA = new Member(MEMBER_A, 10000);
 		Member memberEx = new Member(MEMBER_EX, 10000);
@@ -77,14 +79,15 @@ class MemberServiceV4Test {
 	@AllArgsConstructor
 	static class TestConfig {
 		private final DataSource dataSource;
+
 		@Bean
-		MemberRepositoryV3 memberRepositoryV3() {
-			return new MemberRepositoryV3(dataSource);
+		MemberRepository memberRepository() {
+			return new MemberRepositoryV5(dataSource);
 		}
 
 		@Bean
-		MemberServiceV3_3 memberService() {
-			return new MemberServiceV3_3(memberRepositoryV3());
+		MemberServiceV4 memberService() {
+			return new MemberServiceV4(memberRepository());
 		}
 	}
 
