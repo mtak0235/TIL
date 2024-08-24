@@ -26,9 +26,8 @@ public class ItemServiceApplication {
 		return new TestDataInit(itemRepository);
 	}
 
-/*
 	@Bean
-	@Profile("test")
+	@Profile("local")
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName("org.h2.Driver");
@@ -37,5 +36,4 @@ public class ItemServiceApplication {
 		dataSource.setUsername("sa");
 		return dataSource;
 	}
-*/
 }
