@@ -12,14 +12,13 @@
             price=#{updateParam.price},
             quantity=#{updateParam.quantity}
         where id = #{id}
-
     </update>
-    <select id="findById" resultType="Item">
+    <select id="findById" resultType="hello.itemservice.domain.Item">
         select id, item_name, price, quantity
         from item
         where id = #{id}
     </select>
-    <select id="findAll" resultType="Item">
+    <select id="findAll" resultType="hello.itemservice.domain.Item">
         select id, item_name, price, quantity
         from item
         <where>
@@ -30,6 +29,5 @@
                 and price &lt;= #{maxPrice}
             </if>
         </where>
-
     </select>
 </mapper>

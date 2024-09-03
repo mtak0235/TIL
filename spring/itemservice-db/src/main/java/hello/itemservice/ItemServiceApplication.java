@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-// @Import(MemoryConfig.class)
-@Import(MyBatisConfig.class)
+@Import(JpaConfig.class)
+// @Import(MyBatisConfig.class)
 @SpringBootApplication(scanBasePackages = "hello.itemservice.web")
 public class ItemServiceApplication {
 
