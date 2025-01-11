@@ -26,12 +26,11 @@ public class ThreadStateMain {
 				log("sleep() start");
 				Thread.sleep(3000);
 				log("sleep() end");
-				log("myThread.state4 = " + Thread.currentThread());
+				log("myThread.state4 = " + Thread.currentThread().getState());
 				log("end");
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			}
-
 		}
 	}
 }

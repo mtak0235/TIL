@@ -3,7 +3,6 @@ package thread.control;
 import static thread.util.MyLogger.*;
 
 import thread.start.HelloRunnable;
-import thread.util.MyLogger;
 
 public class ThreadInfoMain {
 	public static void main(String[] args) {
