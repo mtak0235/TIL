@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="dfc836d7-0fd9-4e00-896a-9e5036a84a3e" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/01/test.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/1000.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/10093.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/10171.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/10804.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/10869.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/10871.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/1267.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/15552.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2309.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2438.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2439.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2440.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2441.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2442.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2443.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2444.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2445.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2446.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2480.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2490.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2557.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2562.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2576.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2587.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2752.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/2753.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/02/9498.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/03/10807.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/03/10808.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/03/11328.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/03/13300.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/03/1475.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/03/1919.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/03/2577.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/03/3273.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/03/array_test.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/04/1158.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/04/1406.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/04/1436.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/04/5397.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/04/linked_list_test.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/04/memo.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cpp_ref/1.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cpp_ref/1.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cpp_ref/2.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datastructure/10773.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datastructure/14425.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datastructure/1620.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datastructure/1927.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datastructure/1972.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datastructure/2164.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datastructure/2841.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datastructure/4358.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datastructure/5430.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/datastructure/heapq_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/.idea/jpa-buddy.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/.idea/kotlinc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/.idea/libraries/KotlinJavaRuntime.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/algorithm.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/out/production/theory/Sort.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/out/production/theory/StandardInput.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/out/production/theory/_1427.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/out/production/theory/_2750.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/src/Sort.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/src/StandardInput.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/src/_1427.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/src/_2750.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/java_algorithm/theory.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../java/java-start/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../java/java-start/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spring/jdbc/storage_h2.mv.db" beforeDir="false" afterPath="$PROJECT_DIR$/../spring/jdbc/storage_h2.mv.db" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2xUBEkojCYbyYLxHbcRWEDl61tZ" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "kotlin-language-version-configured": "true",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="dfc836d7-0fd9-4e00-896a-9e5036a84a3e" name="변경" comment="" />
+      <created>1747982663577</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1747982663577</updated>
+      <workItem from="1747982666431" duration="669000" />
+    </task>
+    <servers />
+  </component>
+</project>
